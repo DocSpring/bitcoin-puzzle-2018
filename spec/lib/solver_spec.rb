@@ -11,7 +11,8 @@ RSpec.describe Solver do
       output = Solver.new.solve(input)
       expect(output).to(
         eq(expected),
-        "Wrong output for: #{input}. Output: #{output}\tExpected: #{expected}"
+        "Wrong output for: #{input}. " \
+        "Output: #{output.inspect}\tExpected: #{expected.inspect}"
       )
     end
   end

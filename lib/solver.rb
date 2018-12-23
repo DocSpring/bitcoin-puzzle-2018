@@ -9,6 +9,8 @@ class Solver
   MAX_INT = 4_294_967_295
   MOD_INT = MAX_INT + 1
 
+  MAGIC_OUTPUT_STRING = '9eff33ffb0'
+
   INSTRUCTIONS = {
     '00' => :mov_const,
     '01' => :mov_reg,
@@ -21,7 +23,9 @@ class Solver
     '0a' => :and,
     '0b' => :or,
     '0c' => :xor,
-    '0d' => :not
+    '0d' => :not,
+    'fe' => :set_output_to_ascii,
+    'ff' => :print_hex_and_reset
   }.freeze
   CONST_INSTRUCTIONS = %i[
     mov_const add_const sub_const
@@ -35,24 +39,33 @@ class Solver
   ].freeze
 
   INSTRUCTION_ARG_LENGTHS = begin
-    hash = {}
+    hash = {
+      set_output_to_ascii: 5,
+      print_hex_and_reset: 5
+    }
     CONST_INSTRUCTIONS.each { |k| hash[k] = 5 }
     SINGLE_REGISTER_INSTRUCTIONS.each { |k| hash[k] = 1 }
     DOUBLE_REGISTER_INSTRUCTIONS.each { |k| hash[k] = 2 }
     hash
   end
 
-  attr_accessor :log, :registers, :state, :instruction, :args
+  attr_accessor :log, :registers, :state, :instruction, :args, :output, :output_mode
 
   def initialize
-    @registers = [0] * 16
-    @state = :pending_instruction
-    @instruction = nil
-    @args = []
+    reset_state!
+    @output = []
 
     @log = Logger.new(STDOUT)
-    # @log.level = Logger::INFO
     @log.level = Logger::WARN
+    # @log.level = Logger::INFO
+  end
+
+  def reset_state!
+    @state = :pending_instruction
+    @registers = [0] * 16
+    @instruction = nil
+    @args = []
+    @output_mode = :hex
   end
 
   def solve(input)
@@ -67,9 +80,12 @@ class Solver
         byte = +''
       end
     end
-    output = registers_to_hex
-    log.debug "[Output] '#{output}'"
-    output
+
+    flush_registers_to_output!
+
+    output_string = @output.join('')
+    log.info "[Output] '#{output_string}'"
+    output_string
   end
 
   def set_state(state)
@@ -79,6 +95,36 @@ class Solver
       self.instruction = nil
       args.clear
     end
+  end
+
+  def flush_registers_to_output!
+    hex_string = registers_to_hex
+
+    # puts hex_string.inspect
+
+    if output_mode == :hex
+      output << hex_string
+    elsif output_mode == :ascii
+      ascii = [hex_string].pack('H*').sub(/\x00+$/, '')
+      output << ascii
+    else
+      raise "Invalid output mode! '#{output_mode}'"
+    end
+  end
+
+  def registers_to_hex
+    trimmed_registers = []
+    found_nonzero = false
+    @registers[0, 8].dup.reverse_each do |value|
+      found_nonzero = true if value != 0
+      trimmed_registers.unshift(value) if found_nonzero
+    end
+    # Always show at least the first value.
+    trimmed_registers << @registers[0] if trimmed_registers.empty?
+
+    trimmed_registers.map do |val|
+      val.to_s(16).rjust(2 * 4, '0')
+    end.join('')
   end
 
   def process_byte(byte)
@@ -97,7 +143,6 @@ class Solver
     end
 
     if instruction && args.size == INSTRUCTION_ARG_LENGTHS[instruction]
-      log.debug "Running instruction: #{instruction} #{args.join(' ')}"
       begin
         process_instruction
       rescue SolverError
@@ -109,7 +154,31 @@ class Solver
   def process_instruction
     return unless instruction
 
-    # The first arg for every instruction is always a register
+    # The set_output_to_ascii or print_hex_and_reset instructions
+    # are only triggered when the args match a special value.
+    # This lets us run the solver on random PDFs and images
+    # without triggering this unintentionally.
+    if instruction == :set_output_to_ascii
+      return unless args.join('') == MAGIC_OUTPUT_STRING
+
+      log.info 'Setting output to ASCII...'
+
+      @output_mode = :ascii
+      return
+    end
+
+    if instruction == :print_hex_and_reset
+      return unless args.join('') == MAGIC_OUTPUT_STRING
+
+      log.info 'Flushing registers to output...'
+
+      flush_registers_to_output!
+      reset_state!
+      return
+    end
+
+    # The first arg for every instruction is always a register,
+    # apart from some special cases
     register_to_hex = args.shift
     register_to = register_to_hex.to_i(16)
     ensure_valid_register!(register_to)
@@ -173,20 +242,5 @@ class Solver
 
   def ensure_valid_register!(register)
     raise RegisterOutOfBounds if register > 15
-  end
-
-  def registers_to_hex
-    trimmed_registers = []
-    found_nonzero = false
-    @registers[0, 8].dup.reverse_each do |value|
-      found_nonzero = true if value != 0
-      trimmed_registers.unshift(value) if found_nonzero
-    end
-    # Always show at least the first value.
-    trimmed_registers << @registers[0] if trimmed_registers.empty?
-
-    trimmed_registers.map do |val|
-      val.to_s(16).rjust(2 * 4, '0')
-    end.join('')
   end
 end
