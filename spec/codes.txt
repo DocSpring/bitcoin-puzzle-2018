@@ -1,0 +1,8 @@
+Bitcoin private key is 256 bits, or 32 bytes.
+Our VM has 8 registers with 4 bytes per register.
+
+move 4-byte constant into register
+- mov <register>, <constant>
+
+Every program ends by printing out the contents of the registers, from 0 to 7.
+If all the remaining registers are zero, then prints nothing.

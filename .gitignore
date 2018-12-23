@@ -1,0 +1,7 @@
+/.bundle
+/vendor/bundle/
+/vendor/ruby/
+.byebug_history
+/public/uploads
+node_modules
+coverage
