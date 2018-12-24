@@ -13,14 +13,15 @@ RSpec.describe StringCompiler do
         'many register flushes.',
       'ABCDEFabcdef1234567890-=!@#$%^&*()_>?<><":}{|'
     ].each do |test_string|
-      [true, false].each do |encrypt|
+      # [true, false].each do |encrypt|
+      [true].each do |encrypt|
         bytecode = StringCompiler.new(
           test_string, ascii: true, encrypt: encrypt
         ).compile
+        puts "Test String: #{test_string.inspect}"
+        puts "Bytecode: #{bytecode}"
         output = Solver.new.solve(bytecode)
-        # puts "Test String: #{test_string.inspect}"
-        # puts "Bytecode: #{bytecode}"
-        # puts "Output:   #{output.inspect}"
+        puts "Output:   #{output.inspect}"
 
         expect(output).to(
           eq(test_string),

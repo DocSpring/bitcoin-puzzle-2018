@@ -8,7 +8,7 @@ require_relative 'lib/string_compiler.rb'
 
 input = ARGV.shift || 'Hello world!'
 ascii = ARGV.include?('--ascii')
-encrypt = ARGV.include?('--ascii')
+encrypt = ARGV.include?('--encrypt')
 
 output = StringCompiler.new(input, ascii: ascii, encrypt: encrypt).compile
 

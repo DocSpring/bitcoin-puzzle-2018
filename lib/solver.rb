@@ -57,7 +57,7 @@ class Solver
 
     @log = Logger.new(STDOUT)
     @log.level = Logger::WARN
-    # @log.level = Logger::INFO
+    # @log.level = Logger::DEBUG
   end
 
   def reset_state!
