@@ -24,6 +24,8 @@ class Solver
     '0b' => :or,
     '0c' => :xor,
     '0d' => :not,
+    '0e' => :right_shift,
+    '0f' => :left_shift,
     'fe' => :set_output_to_ascii,
     'ff' => :print_hex_and_reset
   }.freeze
@@ -31,7 +33,7 @@ class Solver
     mov_const add_const sub_const
   ].freeze
   SINGLE_REGISTER_INSTRUCTIONS = %i[
-    inc dec not
+    inc dec not right_shift left_shift
   ].freeze
   DOUBLE_REGISTER_INSTRUCTIONS = %i[
     mov_reg add sub mul div
@@ -231,6 +233,12 @@ class Solver
       registers[register_to] ^= registers[register_from]
     when :not
       registers[register_to] = ~registers[register_to]
+
+    when :right_shift
+      registers[register_to] = registers[register_to] >> 1
+
+    when :left_shift
+      registers[register_to] = registers[register_to] << 1
     end
 
     check_overflow(register_to) if register_to
