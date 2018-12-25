@@ -75,15 +75,8 @@ class Solver
 
   def solve(input)
     # log.debug "[Input] '#{input}'"
-    byte = +''
-    input.scan(/.{1}/) do |char|
-      next if char == ' '
-
-      byte << char
-      if byte.size == 2
-        process_byte byte
-        byte = +''
-      end
+    input.scan(/.{2}/) do |hex_byte|
+      process_byte(hex_byte)
     end
 
     flush_registers_to_output!

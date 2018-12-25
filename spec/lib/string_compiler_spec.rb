@@ -26,7 +26,10 @@ RSpec.describe StringCompiler do
       TEST_STRINGS.each do |string|
         it "compiles '#{truncate string, 20}...' into bytecode" do
           bytecode = StringCompiler.new(
-            string, ascii: true, encrypt: encrypt
+            string,
+            ascii: true,
+            encrypt: encrypt,
+            compact: true
           ).compile
           output = Solver.new.solve(bytecode)
           # puts "Test String: #{string.inspect}"
