@@ -1,6 +1,6 @@
 #!/bin/bash
 
-for f in ~/code/form_api/pdfs/irs/forms/*.pdf; do
+for f in ../form_api/pdfs/irs/forms/*.pdf; do
   BASENAME=$(basename $f)
   printf "$BASENAME => \t"
   ./process_file.rb $f

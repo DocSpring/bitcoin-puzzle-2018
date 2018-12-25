@@ -8,3 +8,5 @@ gem "rspec"
 gem "simplecov"
 gem "rubocop"
 gem "pry-byebug"
+
+gem 'bitcoin-ruby'

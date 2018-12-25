@@ -5,3 +5,4 @@
 /public/uploads
 node_modules
 coverage
+build
