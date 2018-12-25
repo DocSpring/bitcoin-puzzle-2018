@@ -24,14 +24,17 @@ binary_inputs = stripped_inputs.map do |t|
 end
 
 # JSON doesn't support binary data
-File.open(File.expand_path('../build/puzzle.json', __dir__), 'w') do |f|
+puts 'Writing build/tests.json...'
+File.open(File.expand_path('../build/tests.json', __dir__), 'w') do |f|
   f.write stripped_inputs.to_json
 end
 
-File.open(File.expand_path('../build/puzzle.yml', __dir__), 'w') do |f|
+puts 'Writing build/tests.yml...'
+File.open(File.expand_path('../build/tests.yml', __dir__), 'w') do |f|
   f.write binary_inputs.to_yaml
 end
 
-File.open(File.expand_path('../build/puzzle.bin', __dir__), 'w') do |f|
+puts 'Writing build/tests.bin...'
+File.open(File.expand_path('../build/tests.bin', __dir__), 'w') do |f|
   f.write binary_inputs.to_msgpack
 end

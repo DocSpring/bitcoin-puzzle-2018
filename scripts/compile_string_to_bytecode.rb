@@ -4,13 +4,30 @@
 # This program compiles a string into a bytecode program
 # that will print out that string.
 
-require_relative 'lib/string_compiler.rb'
+require_relative '../lib/string_compiler.rb'
 
-input = ARGV.shift || 'Hello world!'
+input =
+  if ARGV.last == '-'
+    STDIN.read
+  else
+    ARGV.shift || 'Hello world!'
+  end
 ascii = ARGV.include?('--ascii')
 encrypt = ARGV.include?('--encrypt')
+compact = ARGV.include?('--compact')
 
-output = StringCompiler.new(input, ascii: ascii, encrypt: encrypt).compile
+output = StringCompiler.new(
+  input,
+  ascii: ascii,
+  encrypt: encrypt,
+  compact: compact
+).compile
 
-puts "Input:  '#{input}'"
-puts "Bytecode: #{output}"
+if ARGV.include?('-v')
+  puts 'Input:'
+  puts '---------------------------------------------'
+  puts input
+  puts '---------------------------------------------'
+end
+
+puts output

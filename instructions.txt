@@ -1,0 +1,43 @@
+ ██████╗ ██████╗ ███╗   ██╗ ██████╗ ██████╗  █████╗ ████████╗███████╗██╗
+██╔════╝██╔═══██╗████╗  ██║██╔════╝ ██╔══██╗██╔══██╗╚══██╔══╝██╔════╝██║
+██║     ██║   ██║██╔██╗ ██║██║  ███╗██████╔╝███████║   ██║   ███████╗██║
+██║     ██║   ██║██║╚██╗██║██║   ██║██╔══██╗██╔══██║   ██║   ╚════██║╚═╝
+╚██████╗╚██████╔╝██║ ╚████║╚██████╔╝██║  ██║██║  ██║   ██║   ███████║██╗
+ ╚═════╝ ╚═════╝ ╚═╝  ╚═══╝ ╚═════╝ ╚═╝  ╚═╝╚═╝  ╚═╝   ╚═╝   ╚══════╝╚═╝
+
+You figured out the instruction set and wrote a VM that passes all the tests!
+
+Next steps:
+-----------------------------------------------------------------------------
+
+Download the Bitcoin whitepaper:
+
+    $ curl https://bitcoin.org/bitcoin.pdf -o /tmp/bitcoin.pdf
+
+Check the SHA-256 hash of the downloaded PDF:
+
+    $ sha256sum /tmp/bitcoin.pdf
+
+    # => b1674191a88ec5cdd733e4240a81803105dc412d6c6708d53ab94fc248f4f553
+
+Now use the PDF file as the input to your program.
+i.e. "Execute" the PDF, just like you executed this instructions.exe program.
+(Hopefully the tests made it clear that your program should skip any
+invalid instructions, and just continue until it finds the next valid instruction.)
+
+Once your program has finished, it will print out a hex-encoded 256-bit value.
+This is the private key for our Bitcoin address.
+
+You might need to convert this private key to the wallet import format (WIF),
+so that you can import it into Electrum, etc.
+
+You can do this with the bitcoin-explorer command-line tool:
+(https://github.com/libbitcoin/libbitcoin-explorer)
+
+    $ echo <hex-encoded private key> | bx base58check-encode -v 128
+
+You could also use this Ruby script:
+
+* https://gist.github.com/ndbroadbent/522c374d18e6a5d592465ff83d49efe0
+
+WIF Reference: https://en.bitcoin.it/wiki/Wallet_import_format

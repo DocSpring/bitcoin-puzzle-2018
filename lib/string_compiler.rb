@@ -8,7 +8,8 @@ require 'securerandom'
 # This program compiles a string into a bytecode program
 # that will print out that string.
 class StringCompiler
-  attr_accessor :input, :options, :as_ascii, :flush_instruction, :encrypt
+  attr_accessor :input, :options, :as_ascii,
+                :flush_instruction, :encrypt, :command_sep
 
   def initialize(input, options = {})
     @input = input
@@ -17,6 +18,8 @@ class StringCompiler
     @as_ascii = options[:ascii]
     flush_byte = as_ascii ? 'fe' : 'ff'
     @flush_instruction = "#{flush_byte}#{Solver::MAGIC_OUTPUT_STRING}"
+
+    @command_sep = options[:compact] ? '' : ' '
 
     @encrypt = options[:encrypt]
   end
@@ -55,7 +58,7 @@ class StringCompiler
     # Make sure format is set to ASCII if required
     instructions << flush_instruction if as_ascii && instructions.last != flush_instruction
 
-    instructions.join(' ')
+    instructions.join(command_sep)
   end
 
   # Just adds some simple obfuscation using all of the instructions
@@ -216,7 +219,7 @@ class StringCompiler
           # We need to set up another small constant in another register,
           # otherwise the result will often be zero
           variable_value /= 7
-          variable_instruction = '000d00000007 090c0d'
+          variable_instruction = "000d00000007#{command_sep}090c0d"
         when 7
           # xor the actual integer with
           # some random previous registers (not including itself)
@@ -234,7 +237,7 @@ class StringCompiler
             variable_instructions << "0c#{register}#{previous_register}"
           end
 
-          variable_instruction = variable_instructions.shuffle.join(' ')
+          variable_instruction = variable_instructions.shuffle.join(command_sep)
         end
 
         variable_value = variable_value % Solver::MOD_INT
@@ -309,7 +312,7 @@ class StringCompiler
 
         register_instructions << [
           mov_instruction,
-          extra_instructions.join(' '),
+          extra_instructions.join(command_sep),
           variable_instruction,
           xor_random_instruction,
           xor_variable_instruction
@@ -351,6 +354,6 @@ class StringCompiler
     # Make sure format is set to ASCII if required
     instructions << flush_instruction if as_ascii && instructions.last != flush_instruction
 
-    instructions.join(' ')
+    instructions.join(command_sep)
   end
 end

@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 # frozen_string_literal: true
 
-require_relative 'lib/solver.rb'
+require_relative '../lib/solver.rb'
 
 filepath = ARGV[0]
 unless filepath

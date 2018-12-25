@@ -1,7 +1,13 @@
 ### Bitcoin Puzzle Generator
 
-# IMPORTANT: Never make this source code public!
+This repo is the reference solution to generate the VM test suite and compile the instructions.
 
-This repo is the reference solution to generate the VM and test suite.
+Generate tests:
 
-### Notes
+```
+$ ./scripts/generate_tests.rb
+```
+
+Compile instructions:
+
+$ ./scripts/compile_instructions.rb
