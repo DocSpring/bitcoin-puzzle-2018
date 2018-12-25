@@ -30,8 +30,8 @@ RSpec.describe StringCompiler do
           ).compile
           output = Solver.new.solve(bytecode)
           # puts "Test String: #{string.inspect}"
-          puts "Bytecode: #{bytecode}"
-          puts "Output:   #{output.inspect}"
+          # puts "Bytecode: #{bytecode}"
+          # puts "Output:   #{output.inspect}"
 
           expect(output).to(
             eq(string),
