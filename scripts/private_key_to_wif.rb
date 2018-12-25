@@ -1,14 +1,13 @@
 #!/usr/bin/env ruby
 # frozen_string_literal: true
 
-require 'securerandom'
-require 'digest'
-require 'bitcoin'
-
-# Converts 256-bit private key to WIF (wallet import format)
+# Converts 256-bit hex-encoded private key to WIF (wallet import format)
 # See: https://en.bitcoin.it/wiki/Wallet_import_format
 
-# From: https://bhelx.simst.im/articles/generating-bitcoin-keys-from-scratch-with-ruby/
+# Code from: https://bhelx.simst.im/articles/generating-bitcoin-keys-from-scratch-with-ruby/
+
+require 'digest'
+require 'bitcoin'
 
 hex_string = ARGV[0]
 
@@ -52,4 +51,4 @@ wif = wif(hex_string)
 puts "WIF:  #{wif}"
 
 key = Bitcoin::Key.from_base58(wif)
-puts "Addr: #{key.addr}"
+puts "Public: #{key.addr}"
