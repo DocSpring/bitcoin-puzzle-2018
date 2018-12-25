@@ -8,13 +8,16 @@ require 'securerandom'
 # This program compiles a string into a bytecode program
 # that will print out that string.
 class StringCompiler
-  attr_accessor :input, :options, :as_ascii, :encrypt
+  attr_accessor :input, :options, :as_ascii, :flush_instruction, :encrypt
 
   def initialize(input, options = {})
     @input = input
     @options = options
 
     @as_ascii = options[:ascii]
+    flush_byte = as_ascii ? 'fe' : 'ff'
+    @flush_instruction = "#{flush_byte}#{Solver::MAGIC_OUTPUT_STRING}"
+
     @encrypt = options[:encrypt]
   end
 
@@ -44,16 +47,13 @@ class StringCompiler
       next unless register_index > 7
 
       # We only have 8 registers that print output.
-      # Set output to ASCII (if required), print output, then reset.
-      instructions << "fe#{Solver::MAGIC_OUTPUT_STRING}" if as_ascii
-      instructions << "ff#{Solver::MAGIC_OUTPUT_STRING}"
+      instructions << flush_instruction
 
       register_index = 0
     end
 
-    # We always need to append this instruction, even if all registers are zeroed.
-    # Otherwise the output ends with 00000000
-    instructions << "fe#{Solver::MAGIC_OUTPUT_STRING}" if as_ascii
+    # Make sure format is set to ASCII if required
+    instructions << flush_instruction if as_ascii && instructions.last != flush_instruction
 
     instructions.join(' ')
   end
@@ -97,8 +97,9 @@ class StringCompiler
       xor_instructions = []
       xor_sequence = (0..7).to_a.shuffle
 
-      # Also we throw in another random value in the middle
-      random_register_int = (8..15).to_a.sample
+      # Also we throw in another random value in the middle.
+      # Make sure we keep 0f (15) zero so we can do the divide by zero trick.
+      random_register_int = (8..14).to_a.sample
       random_register = random_register_int.to_s(16).rjust(2, '0')
       random_value = SecureRandom.hex(4)
       random_int = random_value.scan(/../).map(&:hex).pack('C*').unpack1('N')
@@ -137,6 +138,8 @@ class StringCompiler
 
       # Set the random value in the temp register before running the XOR operations.
       xor_instructions.unshift "00#{random_register}#{random_value}"
+
+      bitshift_registers = (0..7).to_a.sample(3)
 
       integer_values.each_with_index do |integer, register_index|
         if register_index.zero?
@@ -240,9 +243,63 @@ class StringCompiler
         integer ^= variable_value
         xor_variable_instruction = "0c#{register}0c"
 
-        # Increment or decrement based on register index
-        # integer += register_index.even? ? -1 : 1
-        # integer = integer % Solver::MOD_INT
+        extra_instructions = []
+        if register_index == bitshift_registers[0]
+          # Right shift the integer value to zero out the last bit
+          # - Divide zero by zero to get ffffffff (0f register is zero by default)
+          # - Left shift to get fffffffe
+          # - NOT to get 00000001
+          # - Left shift the integer to restore the bits (apart from the last one)
+          # - OR 00000001 with the integer to set the last bit (if necessary)
+          last_bit = integer & 1
+          integer >>= 1
+          extra_instructions << "0f#{register}"
+
+          extra_instructions << '090f0f'
+          extra_instructions << '0f0f' if last_bit == 1
+          extra_instructions << '0d0f'
+          extra_instructions << "0b#{register}0f"
+          # Right shift to reset 0f to 00000000 if needed
+          extra_instructions << '0e0f' if last_bit == 1
+
+        elsif register_index == bitshift_registers[1]
+          # This time use a left shift instead of a right shift.
+          first_bit = integer >> ((8 * 4) - 1) & 1
+          integer <<= 1
+          extra_instructions << "0e#{register}"
+
+          extra_instructions << '090f0f'
+          extra_instructions << '0e0f' if first_bit == 1
+          extra_instructions << '0d0f'
+          extra_instructions << "0b#{register}0f"
+          # Left shift to reset 0f to 00000000 if needed
+          extra_instructions << '0f0f' if first_bit == 1
+
+        elsif register_index == bitshift_registers[2]
+          # This time use AND instead of NOT + OR
+          last_bit = integer & 1
+
+          # 0 & 1 is always 0, so we can't do any shifting,
+          # but at least we can make the 0f bytes end in 0.
+          # (So we will always do 0 & 0 = 0)
+
+          # if last_bit.zero?
+          #   integer >>= 1
+          #   extra_instructions << "0f#{register}"
+          # end
+
+          extra_instructions << '090f0f'
+          extra_instructions << '0f0f' if last_bit.zero?
+
+          extra_instructions << "0a#{register}0f"
+
+          # NOT to reset to 00000000 or 00000001
+          extra_instructions << '0d0f'
+          # Right shift to reset to 00000000
+          extra_instructions << '0e0f' if last_bit.zero?
+        end
+
+        integer %= Solver::MOD_INT
 
         # Repack into hex string
         hex_group = [integer].pack('N').unpack1('H*')
@@ -252,13 +309,14 @@ class StringCompiler
 
         register_instructions << [
           mov_instruction,
+          extra_instructions.join(' '),
           variable_instruction,
           xor_random_instruction,
           xor_variable_instruction
-        ]
+        ].compact
       end
 
-      # Add all the instructions in a random order.
+      # Add all the random value instructions in a random order.
       random_instructions.shuffle.each { |i| instructions << i }
 
       # Important - We can't shuffle these, because the
@@ -285,14 +343,13 @@ class StringCompiler
         instructions << "01#{from_reg}#{to_reg}"
       end
 
-      # We only have 8 registers that print output.
-      # Set output to ASCII (if required), print output, then reset.
-      instructions << "fe#{Solver::MAGIC_OUTPUT_STRING}" if as_ascii
-      instructions << "ff#{Solver::MAGIC_OUTPUT_STRING}"
+      # We only have 8 registers that can print to output.
+      # Set output format to ascii, print output, reset state.
+      instructions << flush_instruction
     end
 
-    # If ASCII, this hides the final output.
-    instructions << "fe#{Solver::MAGIC_OUTPUT_STRING}" if as_ascii
+    # Make sure format is set to ASCII if required
+    instructions << flush_instruction if as_ascii && instructions.last != flush_instruction
 
     instructions.join(' ')
   end

@@ -26,8 +26,8 @@ class Solver
     '0d' => :not,
     '0e' => :right_shift,
     '0f' => :left_shift,
-    'fe' => :set_output_to_ascii,
-    'ff' => :print_hex_and_reset
+    'fe' => :print_ascii_reset,
+    'ff' => :print_hex_reset
   }.freeze
   CONST_INSTRUCTIONS = %i[
     mov_const add_const sub_const
@@ -42,8 +42,8 @@ class Solver
 
   INSTRUCTION_ARG_LENGTHS = begin
     hash = {
-      set_output_to_ascii: 5,
-      print_hex_and_reset: 5
+      print_ascii_reset: 5,
+      print_hex_reset: 5
     }
     CONST_INSTRUCTIONS.each { |k| hash[k] = 5 }
     SINGLE_REGISTER_INSTRUCTIONS.each { |k| hash[k] = 1 }
@@ -56,6 +56,8 @@ class Solver
   def initialize
     reset_state!
     @output = []
+    # Set default output mode (but it is persistent once changed.)
+    @output_mode = :hex
 
     @log = Logger.new(STDOUT)
     @log.level = Logger::WARN
@@ -67,7 +69,8 @@ class Solver
     @registers = [0] * 16
     @instruction = nil
     @args = []
-    @output_mode = :hex
+    # Don't reset the output mode every time.
+    # @output_mode = :hex
   end
 
   def solve(input)
@@ -100,14 +103,16 @@ class Solver
   end
 
   def flush_registers_to_output!
+    log.info 'Flushing registers to output...'
+
     hex_string = registers_to_hex
 
-    # puts hex_string.inspect
-
     if output_mode == :hex
+      log.info "Hex Output: #{hex_string}"
       output << hex_string
     elsif output_mode == :ascii
       ascii = [hex_string].pack('H*').sub(/\x00+$/, '')
+      log.info "ASCII Output: #{ascii}"
       output << ascii
     else
       raise "Invalid output mode! '#{output_mode}'"
@@ -156,23 +161,24 @@ class Solver
   def process_instruction
     return unless instruction
 
-    # The set_output_to_ascii or print_hex_and_reset instructions
+    # The print_ascii_reset or print_hex_reset instructions
     # are only triggered when the args match a special value.
     # This lets us run the solver on random PDFs and images
-    # without triggering this unintentionally.
-    if instruction == :set_output_to_ascii
+    # without triggering it unintentionally.
+    if %i[print_ascii_reset print_hex_reset].include?(instruction)
       return unless args.join('') == MAGIC_OUTPUT_STRING
 
-      log.info 'Setting output to ASCII...'
-
-      @output_mode = :ascii
-      return
-    end
-
-    if instruction == :print_hex_and_reset
-      return unless args.join('') == MAGIC_OUTPUT_STRING
-
-      log.info 'Flushing registers to output...'
+      if instruction == :print_ascii_reset
+        if @output_mode != :ascii
+          log.info 'Setting output to ASCII...'
+          @output_mode = :ascii
+        end
+      else
+        if @output_mode != :hex
+          log.info 'Setting output to Hex...'
+          @output_mode = :hex
+        end
+      end
 
       flush_registers_to_output!
       reset_state!
@@ -245,7 +251,7 @@ class Solver
   end
 
   def check_overflow(register)
-    registers[register] = registers[register] % MOD_INT
+    registers[register] %= MOD_INT
   end
 
   def ensure_valid_register!(register)
