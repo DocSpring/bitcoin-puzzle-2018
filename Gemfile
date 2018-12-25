@@ -9,4 +9,5 @@ gem "simplecov"
 gem "rubocop"
 gem "pry-byebug"
 
+gem 'msgpack'
 gem 'bitcoin-ruby'

@@ -2,6 +2,7 @@
 
 require 'json'
 TESTS = JSON.parse(File.read(File.expand_path('../tests.json', __dir__)))
+# TESTS = JSON.parse(File.read(File.expand_path('../../build/puzzle.json', __dir__)))
 
 require_relative '../../lib/solver.rb'
 
