@@ -7,7 +7,6 @@
 
 You figured out the instruction set and wrote a VM that passes all the tests!
 
-Next steps:
 -----------------------------------------------------------------------------
 
 Download the Bitcoin whitepaper:
@@ -20,16 +19,16 @@ Check the SHA-256 hash of the downloaded PDF:
 
     # => b1674191a88ec5cdd733e4240a81803105dc412d6c6708d53ab94fc248f4f553
 
-Now use the PDF file as the input to your program.
-i.e. "Execute" the PDF, just like you executed this instructions.exe program.
-(Hopefully the tests made it clear that your program should skip any
-invalid instructions, and just continue until it finds the next valid instruction.)
+Now use this PDF file as the input for your program.
 
-Once your program has finished, it will print out a hex-encoded 256-bit value.
-This is the private key for our Bitcoin address.
+e.g. If you ran `./run_program instructions.exe` to produce this message,
+then you would run `./run_program /tmp/bitcoin.pdf` to execute the contents of the PDF.
 
-You might need to convert this private key to the wallet import format (WIF),
-so that you can import it into Electrum, etc.
+When your program has finished, it will print a hex-encoded 256-bit value.
+This is the private key for a Bitcoin address that contains 0.125 BTC.
+
+You will probably want to convert this private key to the wallet import format (WIF).
+You can import WIF keys into Electrum, etc.
 
 You can do this with the bitcoin-explorer command-line tool:
 (https://github.com/libbitcoin/libbitcoin-explorer)
@@ -40,4 +39,18 @@ You could also use this Ruby script:
 
 * https://gist.github.com/ndbroadbent/522c374d18e6a5d592465ff83d49efe0
 
-WIF Reference: https://en.bitcoin.it/wiki/Wallet_import_format
+More info about WIF: https://en.bitcoin.it/wiki/Wallet_import_format
+
+
+
+-----------------------------------------------------------------------------
+
+This Bitcoin programming challenge was sponsored by https://FormAPI.io
+
+  ___                _   ___ ___   _
+ | __|__ _ _ _ __   /_\ | _ \_ _| (_)___
+ | _/ _ \ '_| '  \ / _ \|  _/| | _| / _ \
+ |_|\___/_| |_|_|_/_/ \_\_| |___(_)_\___/
+
+
+We hope you enjoyed it!

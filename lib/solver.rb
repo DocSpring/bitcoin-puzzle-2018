@@ -61,7 +61,7 @@ class Solver
 
     @log = Logger.new(STDOUT)
     @log.level = Logger::WARN
-    # @log.level = Logger::DEBUG
+    @log.level = Logger::DEBUG if ENV['DEBUG']
   end
 
   def reset_state!
@@ -74,7 +74,7 @@ class Solver
   end
 
   def solve(input)
-    log.debug "[Input] '#{input}'"
+    # log.debug "[Input] '#{input}'"
     byte = +''
     input.scan(/.{1}/) do |char|
       next if char == ' '
@@ -108,11 +108,9 @@ class Solver
     hex_string = registers_to_hex
 
     if output_mode == :hex
-      log.info "Hex Output: #{hex_string}"
       output << hex_string
     elsif output_mode == :ascii
       ascii = [hex_string].pack('H*').sub(/\x00+$/, '')
-      log.info "ASCII Output: #{ascii}"
       output << ascii
     else
       raise "Invalid output mode! '#{output_mode}'"
@@ -141,11 +139,9 @@ class Solver
       # Just skip unknown instructions
       return unless next_instruction = INSTRUCTIONS[byte]
 
-      log.debug "Setting instruction: #{next_instruction} (#{byte})"
       self.instruction = next_instruction
       set_state(:pending_args)
     when :pending_args
-      log.debug "Pushing arg: #{byte}"
       args << byte
     end
 

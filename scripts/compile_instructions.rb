@@ -12,15 +12,15 @@ obfuscated = StringCompiler.new(
   compact: true
 ).compile
 
-puts 'Writing build/instructions.hex...'
-File.open(File.expand_path('../build/instructions.hex', __dir__), 'w') do |f|
+puts 'Writing build/program.hex...'
+File.open(File.expand_path('../build/program.hex', __dir__), 'w') do |f|
   f.write obfuscated
 end
 
 # Converted from hex to binary
 binary_obfuscated = obfuscated.scan(/../).map(&:hex).pack('C*')
 
-puts 'Writing build/instructions.exe...'
-File.open(File.expand_path('../build/instructions.exe', __dir__), 'w') do |f|
+puts 'Writing build/program.exe...'
+File.open(File.expand_path('../build/program.exe', __dir__), 'w') do |f|
   f.write binary_obfuscated
 end

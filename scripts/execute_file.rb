@@ -15,7 +15,6 @@ end
 
 File.open(filepath, 'rb') do |file|
   hex_string = +''
-
   bytes = file.read.unpack('C*')
   bytes.each { |b| hex_string << b.to_s(16).rjust(2, '0') }
 
