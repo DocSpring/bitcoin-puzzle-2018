@@ -23,6 +23,14 @@ body {
   font-size: 75%;
 }
 
+span.o {
+  font-family: system-ui, sans-serif;
+}
+
+span.k {
+  font-family: "Courier New", Courier, monospace;
+}
+
 .nav-wrapper .secondary-button {
   background: #fff;
   border: 1px solid var(--google-gray-500);

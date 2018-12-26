@@ -1,4 +1,5 @@
 const path = require("path");
+const { EnvironmentPlugin } = require("webpack");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const UglifyJsPlugin = require("uglifyjs-webpack-plugin");
@@ -31,25 +32,49 @@ module.exports = (env, argv) => {
           compact: true,
           selfDefending: true,
           deadCodeInjection: true,
-          controlFlowFlattening: true,
-          controlFlowFlatteningThreshold: 0.5,
-          debugProtection: true,
-          debugProtectionInterval: true,
+          deadCodeInjectionThreshold: 0.2,
+          controlFlowFlattening: false,
+          controlFlowFlatteningThreshold: 0.4,
+          // debugProtection: true,
+          // debugProtectionInterval: true,
           disableConsoleOutput: true,
           identifierNamesGenerator: "hexadecimal",
           log: false,
           rotateStringArray: true,
           stringArray: true,
           stringArrayEncoding: "rc4",
-          stringArrayThreshold: 1,
+          stringArrayThreshold: 0.5,
           renameGlobals: true,
-          transformObjectKeys: true,
+          // transformObjectKeys: true,
           unicodeEscapeSequence: false
         })
       ]
     },
     module: {
       rules: [
+        {
+          test: /\.js$/,
+          exclude: /(node_modules|bower_components)/,
+          use: {
+            loader: "babel-loader",
+            options: {
+              presets: [
+                [
+                  "@babel/preset-env",
+                  {
+                    targets: {
+                      chrome: 59,
+                      edge: 13,
+                      firefox: 50
+                    },
+                    // For UglifyJS
+                    forceAllTransforms: true
+                  }
+                ]
+              ]
+            }
+          }
+        },
         {
           test: /\.css$/,
           use: [
@@ -71,6 +96,9 @@ module.exports = (env, argv) => {
       ]
     },
     plugins: [
+      new EnvironmentPlugin({
+        NODE_ENV: mode
+      }),
       new MiniCssExtractPlugin({
         // Options similar to the same options in webpackOptions.output
         // both options are optional
