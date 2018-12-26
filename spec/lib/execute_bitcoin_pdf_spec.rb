@@ -18,6 +18,8 @@ RSpec.describe 'Execute the bitcoin.pdf whitepaper as a program' do
 
     output = Solver.new.solve(hex_contents)
 
-    expect(output).to eq 'da7cffe1fffffffc091e462c9d9306f925682760fffffffa7fb698e34bf8c817'
+    expect(output).to eq(
+      '32314146e05f296c4075af0b3c28f5007c40ba13222002331804000022200234'
+    )
   end
 end

@@ -23,6 +23,7 @@ require_relative '../../lib/solver.rb'
 
 RSpec.describe Solver do
   TESTS.each_with_index do |(input, expected), i|
+    human_input = input
     # Our solver program only takes hex input, so convert
     # the binary test inputs to hex strings.
     if test_type == :binary
@@ -30,6 +31,7 @@ RSpec.describe Solver do
       bytes = input.unpack('C*')
       bytes.each { |b| hex_input << b.to_hex }
       input = hex_input
+      human_input = input
     elsif test_type == :source
       # Strip spaces here. The solver should never need to handle spaces.
       # They just make the tests a bit easier to read.
@@ -40,7 +42,7 @@ RSpec.describe Solver do
       output = Solver.new.solve(input)
       expect(output).to(
         eq(expected),
-        "Wrong output for: #{input}. " \
+        "Wrong output for: #{human_input}. " \
         "Output: #{output.inspect}\tExpected: #{expected.inspect}"
       )
     end

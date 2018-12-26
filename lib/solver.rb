@@ -130,7 +130,10 @@ class Solver
     # log "Received byte: #{byte}"
     case state
     when :pending_instruction
-      # Just skip unknown instructions
+      # Only look at the last 4 bits of an instruction.
+      # This means that all instructions are valid (mod 16.)
+      # However, add a special case for fe and ff.
+      byte = (byte.hex % 16).to_hex unless %w[fe ff].include?(byte)
       return unless next_instruction = INSTRUCTIONS[byte]
 
       self.instruction = next_instruction
@@ -178,14 +181,12 @@ class Solver
     # The first arg for every instruction is always a register,
     # apart from some special cases
     register_to_hex = args.shift
-    register_to = register_to_hex.to_i(16)
-    ensure_valid_register!(register_to)
+    register_to = register_to_hex.to_i(16) % 16
 
     register_from_hex = nil
     if DOUBLE_REGISTER_INSTRUCTIONS.include?(instruction)
       register_from_hex = args.shift
-      register_from = register_from_hex.to_i(16)
-      ensure_valid_register!(register_from)
+      register_from = register_from_hex.to_i(16) % 16
     end
 
     log.info "Running instruction: #{instruction} " \
@@ -242,9 +243,5 @@ class Solver
 
   def check_overflow(register)
     registers[register] %= MOD_INT
-  end
-
-  def ensure_valid_register!(register)
-    raise RegisterOutOfBounds if register > 15
   end
 end

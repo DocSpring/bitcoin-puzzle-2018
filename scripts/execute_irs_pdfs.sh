@@ -2,8 +2,8 @@
 
 for f in ../form_api/pdfs/irs/forms/*.pdf; do
   BASENAME=$(basename $f)
-  printf "$BASENAME => \t"
-  ./process_file.rb $f
+  KEY=$(./scripts/execute_file.rb $f)
+  echo "$BASENAME => ${KEY}"
 done
 
 # https://www.irs.gov/pub/irs-prior/f1099r--2016.pdf
