@@ -1,9 +1,12 @@
 import CryptoJS from "./aes.js";
 import seedShuffle from "./seedShuffle.js";
+import "confetti-js";
 
-require("./index.css");
-require("./assets/default_100_percent/100-offline-sprite.png");
-require("./assets/default_200_percent/200-offline-sprite.png");
+import "./index.css";
+import "./assets/default_100_percent/100-offline-sprite.png";
+import "./assets/default_200_percent/200-offline-sprite.png";
+
+import BitcoinLogo from "./assets/bitcoin.svg";
 
 // Copyright (c) 2014 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
@@ -941,7 +944,14 @@ require("./assets/default_200_percent/200-offline-sprite.png");
     },
 
     restart: function() {
+      // Make sure people don't accidentally restart the game
+      // and lose the revealed address
+      if (Runner.finished) return;
+
       if (!this.raqId) {
+        // Reset acheivements array
+        Runner.ACHIEVEMENTS = [];
+
         this.playCount++;
         this.runningTime = 0;
         this.playing = true;
@@ -1007,6 +1017,8 @@ require("./assets/default_200_percent/200-offline-sprite.png");
       }
     }
   };
+
+  Runner.ACHIEVEMENTS = [];
 
   /**
    * Updates the canvas size taking into
@@ -2247,7 +2259,7 @@ require("./assets/default_200_percent/200-offline-sprite.png");
         for (var i = 0; i < this.config.MAX_DISTANCE_UNITS; i++) {
           const threshold = (i + 1) * this.config.ACHIEVEMENT_DISTANCE;
           const value = distance >= threshold ? "1" : "0";
-          this.digits.unshift(value);
+          this.digits.push(value);
         }
 
         const revealedChars = Math.min(
@@ -2255,19 +2267,44 @@ require("./assets/default_200_percent/200-offline-sprite.png");
           Runner.events.KEYLEFT.length
         );
 
-        if (revealedChars === Runner.events.KEYLEFT.length) {
-          const errorCodeEl = document.getElementById("errorCode");
-          errorCodeEl.innerHTML = "GOOD_JOB!";
+        if (revealedChars >= Runner.events.KEYLEFT.length) {
+          if (!Runner.FINISHED) {
+            Runner.FINISHED = true;
+
+            const errorCodeEl = document.getElementById("errorCode");
+            errorCodeEl.innerHTML = "GOOD_JOB!";
+
+            var confettiSettings = {
+              target: "finished",
+              max: "50",
+              size: "1",
+              animate: true,
+              props: [
+                "circle",
+                "square",
+                { type: "svg", src: BitcoinLogo, size: 25, weight: 0.2 }
+              ],
+              colors: [
+                [165, 104, 246],
+                [230, 61, 135],
+                [0, 199, 228],
+                [253, 214, 126]
+              ],
+              clock: "25",
+              rotate: true
+            };
+            var confetti = new ConfettiGenerator(confettiSettings);
+            confetti.render();
+          }
         }
 
-        this.config.ACHIEVEMENTS = this.config.ACHIEVEMENTS || [];
         if (!this.config.ACHIEVEMENT_ORDER) {
           // Deterministically shuffle the revealed index order
           const revealOrder = [];
           for (var i = 0; i < Runner.events.KEYLEFT.length; i++) {
             revealOrder.push(i);
           }
-          this.config.ACHIEVEMENT_ORDER = seedShuffle(revealOrder, 23208);
+          this.config.ACHIEVEMENT_ORDER = seedShuffle(revealOrder, 133742);
         }
 
         let originalText = "This site can’t be reached";
@@ -2279,24 +2316,24 @@ require("./assets/default_200_percent/200-offline-sprite.png");
         // Decrypt any revealed characters
         for (var i = 0; i < revealedChars; i++) {
           const index = this.config.ACHIEVEMENT_ORDER[i];
-          if (!this.config.ACHIEVEMENTS[index]) {
+          if (!Runner.ACHIEVEMENTS[index]) {
             const decrypted = CryptoJS.AES.decrypt(
               Runner.events.KEYLEFT[index],
               Trex.updateRun() + index
             ).toString(CryptoJS.enc.Utf8);
-            this.config.ACHIEVEMENTS[index] = decrypted;
+            Runner.ACHIEVEMENTS[index] = decrypted;
           }
         }
 
         let keySpan = false;
         let newHTML = '<span class="o">';
         for (var i = 0; i < originalText.length; i++) {
-          if (this.config.ACHIEVEMENTS[i]) {
+          if (Runner.ACHIEVEMENTS[i]) {
             if (keySpan !== true) {
               keySpan = true;
               newHTML = newHTML + '</span><span class="k">';
             }
-            newHTML = newHTML + this.config.ACHIEVEMENTS[i];
+            newHTML = newHTML + Runner.ACHIEVEMENTS[i];
           } else {
             if (keySpan !== false) {
               keySpan = false;

@@ -45,7 +45,7 @@ module.exports = (env, argv) => {
           stringArrayEncoding: "rc4",
           stringArrayThreshold: 0.5,
           renameGlobals: true,
-          // transformObjectKeys: true,
+          // transformObjectKeys: true,   // This breaks the build
           unicodeEscapeSequence: false
         })
       ]
@@ -85,7 +85,7 @@ module.exports = (env, argv) => {
           ]
         },
         {
-          test: /\.(png|jpg|gif)$/,
+          test: /\.(png|jpg|gif|svg)$/,
           use: [
             {
               loader: "file-loader",

@@ -1571,6 +1571,11 @@ concat-stream@^1.5.0:
     readable-stream "^2.2.2"
     typedarray "^0.0.6"
 
+confetti-js@^0.0.14:
+  version "0.0.14"
+  resolved "https://registry.yarnpkg.com/confetti-js/-/confetti-js-0.0.14.tgz#c719cd713630fe58f6e641f541e92e06a0d9cdd2"
+  integrity sha512-akIrsrXYQ2i7DkrzM92ftFLe012vZLByVau75N8kGhbjQIWyUicU311ttfvwOoMGdoN4wtWdLi6cU6WJkuWXIw==
+
 connect-history-api-fallback@^1.3.0:
   version "1.5.0"
   resolved "https://registry.yarnpkg.com/connect-history-api-fallback/-/connect-history-api-fallback-1.5.0.tgz#b06873934bc5e344fef611a196a6faae0aee015a"
