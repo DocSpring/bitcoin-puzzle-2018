@@ -367,6 +367,9 @@ import BitcoinLogo from "./assets/bitcoin.svg";
      * Load and decode base 64 encoded sounds.
      */
     loadSounds: function() {
+      // No AudioContext on Safari
+      if (!window.AudioContext) return;
+
       if (!IS_IOS) {
         this.audioContext = new AudioContext();
 
@@ -1008,6 +1011,8 @@ import BitcoinLogo from "./assets/bitcoin.svg";
      * @param {SoundBuffer} soundBuffer
      */
     playSound: function(soundBuffer) {
+      if (!this.audioContext) return;
+
       if (soundBuffer) {
         var sourceNode = this.audioContext.createBufferSource();
         sourceNode.buffer = soundBuffer;
