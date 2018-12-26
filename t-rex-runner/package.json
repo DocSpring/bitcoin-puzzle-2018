@@ -6,7 +6,7 @@
   "main": "webpack.config.js",
   "scripts": {
     "start": "webpack-dev-server --open --config webpack.dev.js",
-    "build": "webpack --mode=production --config webpack.config.js"
+    "build": "rm -rf dist && webpack --mode=production --config webpack.config.js"
   },
   "author": "",
   "license": "ISC",

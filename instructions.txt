@@ -7,7 +7,9 @@
 
 You figured out the instruction set and wrote a VM that passes all the tests!
 
------------------------------------------------------------------------------
+Well done for getting this far, but the challenge isn't over yet.
+There's a few more steps before you unlock the 0.125 BTC but we've set
+up a small 0.005 BTC prize for the first person who makes it this far.
 
 Download the Bitcoin whitepaper:
 
@@ -19,35 +21,51 @@ Check the SHA-256 hash of the downloaded PDF:
 
     # => b1674191a88ec5cdd733e4240a81803105dc412d6c6708d53ab94fc248f4f553
 
-Now use this PDF file as the input for your program.
+Use this PDF file as the input to your program. (e.g. If you ran
+`./your_program instructions.exe` to produce this message, then you
+would run `./your_program /tmp/bitcoin.pdf` to execute the contents of the PDF.)
 
-e.g. If you ran `./run_program instructions.exe` to produce this message,
-then you would run `./run_program /tmp/bitcoin.pdf` to execute the contents of the PDF.
+Your program should print a hex-encoded 256-bit value after executing all
+of the valid instructions in this PDF. This 256-bit value is the private key
+for a Bitcoin address that contains 0.005 BTC.
 
-When your program has finished, it will print a hex-encoded 256-bit value.
-This is the private key for a Bitcoin address that contains 0.125 BTC.
-
-You will probably want to convert this private key to the wallet import format (WIF).
-You can import WIF keys into Electrum, etc.
-
-You can do this with the bitcoin-explorer command-line tool:
-(https://github.com/libbitcoin/libbitcoin-explorer)
+Convert this private key to the wallet import format (WIF), so that you can
+import it into Electrum, etc. You can do this with the bitcoin-explorer
+command-line tool: (https://github.com/libbitcoin/libbitcoin-explorer)
 
     $ echo <hex-encoded private key> | bx base58check-encode -v 128
 
-You could also use this Ruby script:
-
-* https://gist.github.com/ndbroadbent/522c374d18e6a5d592465ff83d49efe0
+You can also use this Ruby script: https://gist.github.com/ndbroadbent/522c374d18e6a5d592465ff83d49efe0
 
 More info about WIF: https://en.bitcoin.it/wiki/Wallet_import_format
 
 
 
------------------------------------------------------------------------------
+---------------------------------------------------------------------------
 
-This Bitcoin programming challenge was sponsored by https://FormAPI.io
 
-  ___                _   ___ ___   _
- | __|__ _ _ _ __   /_\ | _ \_ _| (_)___
- | _/ _ \ '_| '  \ / _ \|  _/| | _| / _ \
- |_|\___/_| |_|_|_/_/ \_\_| |___(_)_\___/
+
+ ______                          _  _
+(_____ \                  _     | || |
+ _____) ) _____   ____  _| |_   | || |
+|  ____/ (____ | / ___)(_   _)  | || |
+| |      / ___ || |      | |_   | || |
+|_|      \_____||_|       \__)  |_||_|
+
+
+
+https://formapi.io/blog/posts/2018-bitcoin-programming-challenge/86a5d2828a0ae87930057e0d30a4e012f6452a105cad0410c37fbd0c2d87b4bb.html
+
+
+
+
+---------------------------------------------------------------------------
+This Bitcoin programming challenge was sponsored by:
+
+ ___                _   ___ ___   _
+| __|__ _ _ _ __   /_\ | _ \_ _| (_)___
+| _/ _ \ '_| '  \ / _ \|  _/| | _| / _ \
+|_|\___/_| |_|_|_/_/ \_\_| |___(_)_\___/
+
+
+https://formapi.io

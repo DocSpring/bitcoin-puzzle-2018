@@ -35,8 +35,8 @@ module.exports = (env, argv) => {
           deadCodeInjectionThreshold: 0.2,
           controlFlowFlattening: false,
           controlFlowFlatteningThreshold: 0.4,
-          // debugProtection: true,
-          // debugProtectionInterval: true,
+          debugProtection: true,
+          debugProtectionInterval: true,
           disableConsoleOutput: true,
           identifierNamesGenerator: "hexadecimal",
           log: false,
@@ -107,7 +107,9 @@ module.exports = (env, argv) => {
       }),
       new HtmlWebpackPlugin({
         title: "formapi.io",
-        template: "src/index.html"
+        template: "src/index.html",
+        filename:
+          "86a5d2828a0ae87930057e0d30a4e012f6452a105cad0410c37fbd0c2d87b4bb.html"
       })
     ]
   };
