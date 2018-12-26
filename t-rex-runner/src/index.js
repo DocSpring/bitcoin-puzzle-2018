@@ -2120,7 +2120,7 @@ import BitcoinLogo from "./assets/bitcoin.svg";
     MAX_DISTANCE_UNITS: 17,
 
     // Distance that causes achievement animation.
-    ACHIEVEMENT_DISTANCE: 5,
+    ACHIEVEMENT_DISTANCE: 80,
 
     // Used for conversion from pixel distance to a scaled unit.
     COEFFICIENT: 0.025,
