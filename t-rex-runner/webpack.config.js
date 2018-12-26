@@ -32,12 +32,19 @@ module.exports = (env, argv) => {
           selfDefending: true,
           deadCodeInjection: true,
           controlFlowFlattening: true,
+          controlFlowFlatteningThreshold: 0.5,
           debugProtection: true,
           debugProtectionInterval: true,
-          rotateUnicodeArray: true,
-          stringArrayEncoding: true,
+          disableConsoleOutput: true,
+          identifierNamesGenerator: "hexadecimal",
+          log: false,
+          rotateStringArray: true,
+          stringArray: true,
+          stringArrayEncoding: "rc4",
+          stringArrayThreshold: 1,
           renameGlobals: true,
-          transformObjectKeys: true
+          transformObjectKeys: true,
+          unicodeEscapeSequence: false
         })
       ]
     },
