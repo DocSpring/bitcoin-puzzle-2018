@@ -1247,17 +1247,13 @@ TODO(https://crbug.com/852872): UI for offline suggested content is incomplete.
   will-change: -webkit-filter, background-color;
 }
 
-.offline #main-message > p {
-  display: none;
-}
-
 .offline.inverted {
   -webkit-filter: invert(100%);
   background-color: #000;
 }
 
 .offline .interstitial-wrapper {
-  color: #2b2b2b;
+  /* color: #2b2b2b; */
   font-size: 1em;
   line-height: 1.55;
   margin: 0 auto;
