@@ -2220,7 +2220,6 @@ require("./assets/default_200_percent/200-offline-sprite.png");
       var highScoreStr = (this.defaultString + distance).substr(
         -this.maxScoreUnits
       );
-
       this.highScore = ["10", "11", ""].concat(highScoreStr.split(""));
     },
 
