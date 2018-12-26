@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 # frozen_string_literal: true
 
-require_relative '../lib/solver.rb'
+require_relative 'lib/solver.rb'
 
 filepath = ARGV[0]
 unless filepath
@@ -15,6 +15,7 @@ end
 
 File.open(filepath, 'rb') do |file|
   hex_string = +''
+
   bytes = file.read.unpack('C*')
   bytes.each { |b| hex_string << b.to_hex }
 

@@ -42,7 +42,7 @@ class StringCompiler
       byte_group << 0 while byte_group.size < 4
       hex_group = byte_group.pack('C*').unpack1('H*')
 
-      register = register_index.to_s(16).rjust(2, '0')
+      register = register_index.to_hex
       instructions << "00#{register}#{hex_group}"
 
       register_index += 1
@@ -103,7 +103,7 @@ class StringCompiler
       # Also we throw in another random value in the middle.
       # Make sure we keep 0f (15) zero so we can do the divide by zero trick.
       random_register_int = (8..14).to_a.sample
-      random_register = random_register_int.to_s(16).rjust(2, '0')
+      random_register = random_register_int.to_hex
       random_value = SecureRandom.hex(4)
       random_int = random_value.scan(/../).map(&:hex).pack('C*').unpack1('N')
 
@@ -114,8 +114,8 @@ class StringCompiler
         from_index = xor_index
         integer_values[to_index] ^= integer_values[from_index]
 
-        to_register = to_index.to_s(16).rjust(2, '0')
-        from_register = from_index.to_s(16).rjust(2, '0')
+        to_register = to_index.to_hex
+        from_register = from_index.to_hex
         xor_instructions.unshift("0c#{to_register}#{from_register}")
 
         if index == 2
@@ -149,7 +149,7 @@ class StringCompiler
           # Initialize the random values and load them into spare registers
           random_values = Array.new(4) { SecureRandom.hex(4) }
           random_values.each_with_index do |val, i|
-            register = (i + 8).to_s(16).rjust(2, '0')
+            register = (i + 8).to_hex
             random_instructions << "00#{register}#{val}"
           end
           random_value_ints = random_values.map do |val|
@@ -160,7 +160,7 @@ class StringCompiler
           # subtract, decrement, added, xored, multiplied, xored,
           # then divided by 10.
           # (in a loop)
-          variable_hex = variable_value.to_s(16).rjust(2, '0')
+          variable_hex = variable_value.to_hex
           random_instructions << "000c000000#{variable_hex}"
 
           # Shuffle all the random constants
@@ -168,7 +168,7 @@ class StringCompiler
         end
 
         # The current register
-        register = register_index.to_s(16).rjust(2, '0')
+        register = register_index.to_hex
 
         # byte_group << 0 while byte_group.size < 4
 
@@ -180,7 +180,7 @@ class StringCompiler
 
         # XOR with random byte
         integer ^= random_int
-        random_register = (random_value_index + 8).to_s(16).rjust(2, '0')
+        random_register = (random_value_index + 8).to_hex
         xor_random_instruction = "0c#{register}#{random_register}"
 
         # Adjust the variable, and perform the same operation in bytecode
@@ -192,7 +192,7 @@ class StringCompiler
           # The previous register is now decrypted, so we can use this value.
           previous_register_index = register_index - 1
           previous_value = integer_values[previous_register_index]
-          previous_register = previous_register_index.to_s(16).rjust(2, '0')
+          previous_register = previous_register_index.to_hex
 
           variable_value -= previous_value
           variable_instruction = "070c#{previous_register}"
@@ -205,13 +205,13 @@ class StringCompiler
         when 4 # xor previous
           previous_register_index = register_index - 1
           previous_value = integer_values[previous_register_index]
-          previous_register = previous_register_index.to_s(16).rjust(2, '0')
+          previous_register = previous_register_index.to_hex
           variable_value ^= previous_value
           variable_instruction = "0c0c#{previous_register}"
         when 5 # mul
           previous_register_index = register_index - 1
           previous_value = integer_values[previous_register_index]
-          previous_register = previous_register_index.to_s(16).rjust(2, '0')
+          previous_register = previous_register_index.to_hex
 
           variable_value *= previous_value
           variable_instruction = "080c#{previous_register}"
@@ -233,7 +233,7 @@ class StringCompiler
 
           value_and_index.sample(4).each do |(int, reg_index)|
             integer ^= int
-            previous_register = reg_index.to_s(16).rjust(2, '0')
+            previous_register = reg_index.to_hex
             variable_instructions << "0c#{register}#{previous_register}"
           end
 
@@ -341,8 +341,8 @@ class StringCompiler
       # and replay them in reverse. This unshuffles the registers
       # into the original order.
       shuffle_register_operations.reverse_each do |(to, from)|
-        to_reg = to.to_s(16).rjust(2, '0')
-        from_reg = from.to_s(16).rjust(2, '0')
+        to_reg = to.to_hex
+        from_reg = from.to_hex
         instructions << "01#{from_reg}#{to_reg}"
       end
 

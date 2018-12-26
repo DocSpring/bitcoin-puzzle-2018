@@ -14,7 +14,7 @@ RSpec.describe 'Execute the bitcoin.pdf whitepaper as a program' do
 
     hex_contents = +''
     bytes = bitcoin_pdf_contents.unpack('C*')
-    bytes.each { |b| hex_contents << b.to_s(16).rjust(2, '0') }
+    bytes.each { |b| hex_contents << b.to_hex }
 
     output = Solver.new.solve(hex_contents)
 

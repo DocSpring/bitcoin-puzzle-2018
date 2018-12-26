@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'logger'
+require_relative 'helpers'
 
 class Solver
   class SolverError < StandardError; end
@@ -121,7 +122,7 @@ class Solver
     trimmed_registers << @registers[0] if trimmed_registers.empty?
 
     trimmed_registers.map do |val|
-      val.to_s(16).rjust(2 * 4, '0')
+      val.to_hex(4)
     end.join('')
   end
 

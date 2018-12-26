@@ -28,7 +28,7 @@ RSpec.describe Solver do
     if test_type == :binary
       hex_input = +''
       bytes = input.unpack('C*')
-      bytes.each { |b| hex_input << b.to_s(16).rjust(2, '0') }
+      bytes.each { |b| hex_input << b.to_hex }
       input = hex_input
     elsif test_type == :source
       # Strip spaces here. The solver should never need to handle spaces.
