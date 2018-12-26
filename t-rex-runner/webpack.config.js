@@ -106,7 +106,7 @@ module.exports = (env, argv) => {
         chunkFilename: "[id].css"
       }),
       new HtmlWebpackPlugin({
-        title: "Custom template using Handlebars",
+        title: "formapi.io",
         template: "src/index.html"
       })
     ]

@@ -32,15 +32,17 @@ span.k {
 }
 
 canvas#finished {
-  position: absolute;
+  position: fixed;
   left: 0;
   right: 0;
   top: 0;
   bottom: 0;
+  z-index: 0;
 }
 
-#main-frame-error {
-  z-index: 1000;
+#main-frame-error,
+#main-content {
+  z-index: 10000;
 }
 
 .nav-wrapper .secondary-button {

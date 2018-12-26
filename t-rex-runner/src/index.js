@@ -618,6 +618,19 @@ import BitcoinLogo from "./assets/bitcoin.svg";
      * Update the game frame and schedules the next one.
      */
     update: function() {
+      // Quick hack to end the game when the full address is revealed
+      if (Runner.FINISHED) {
+        this.playSound(this.soundFx.SCORE);
+        vibrate(200);
+        this.stop();
+        this.crashed = true;
+        this.playing = false;
+        this.distanceMeter.acheivement = false;
+        this.tRex.update(100, Trex.status.CRASHED);
+        this.time = getTimeStamp();
+        return;
+      }
+
       this.updatePending = false;
 
       var now = getTimeStamp();
@@ -780,6 +793,7 @@ import BitcoinLogo from "./assets/bitcoin.svg";
       if (IS_MOBILE && this.playing) {
         e.preventDefault();
       }
+      if (Runner.FINISHED) return;
 
       if (e.target != this.detailsButton) {
         if (
@@ -828,6 +842,8 @@ import BitcoinLogo from "./assets/bitcoin.svg";
      * @param {Event} e
      */
     onKeyUp: function(e) {
+      if (Runner.FINISHED) return;
+
       var keyCode = String(e.keyCode);
       var isjumpKey =
         Runner.keycodes.JUMP[keyCode] ||
@@ -2104,7 +2120,7 @@ import BitcoinLogo from "./assets/bitcoin.svg";
     MAX_DISTANCE_UNITS: 17,
 
     // Distance that causes achievement animation.
-    ACHIEVEMENT_DISTANCE: 75,
+    ACHIEVEMENT_DISTANCE: 5,
 
     // Used for conversion from pixel distance to a scaled unit.
     COEFFICIENT: 0.025,
@@ -2236,7 +2252,10 @@ import BitcoinLogo from "./assets/bitcoin.svg";
 
         if (distance > 0) {
           // Acheivement unlocked
-          if (distance % this.config.ACHIEVEMENT_DISTANCE == 0) {
+          if (
+            distance % this.config.ACHIEVEMENT_DISTANCE == 0 &&
+            !Runner.FINISHED
+          ) {
             // Flash score and play sound.
             this.acheivement = true;
             this.flashTimer = 0;
@@ -2272,7 +2291,7 @@ import BitcoinLogo from "./assets/bitcoin.svg";
             Runner.FINISHED = true;
 
             const errorCodeEl = document.getElementById("errorCode");
-            errorCodeEl.innerHTML = "GOOD_JOB!";
+            errorCodeEl.innerHTML = "GOOD_JOB";
 
             var confettiSettings = {
               target: "finished",
