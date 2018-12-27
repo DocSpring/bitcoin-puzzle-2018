@@ -2,9 +2,12 @@
 
 require_relative 'matrix_3d/rotation'
 require_relative 'matrix_3d/dimension_calculator'
+require_relative 'matrix_3d/trim'
 require 'facets/kernel/deep_clone'
 
 class Matrix3D
+  include Trim
+
   attr_accessor :width, :height, :depth, :array
 
   def initialize(width, height, depth, array)
@@ -63,11 +66,26 @@ class Matrix3D
     end
   end
 
+  def count
+    array.sum do |plane|
+      plane.sum do |rows|
+        rows.count do |value|
+          yield(value)
+        end
+      end
+    end
+  end
+
   def get(x, y, z)
     array[z][y][x]
   end
 
   def set(x, y, z, value)
     array[z][y][x] = value
+  end
+
+  def within_bounds?(x, y, z)
+    x >= 0 && y >= 0 && z >= 0 &&
+      x < width && y < height && z < depth
   end
 end

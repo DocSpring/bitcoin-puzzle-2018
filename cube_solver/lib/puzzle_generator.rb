@@ -3,37 +3,55 @@
 require 'matrix_3d'
 
 class PuzzleGenerator
-  attr_accessor :rng, :width, :height, :depth, :max_length, :matrix, :piece_matrixes
+  attr_accessor :rng, :width, :height, :depth,
+                :min_length, :max_length, :matrix, :pieces
 
   def initialize(
-    seed: 123, width: 8, height: 8, depth: 8, max_length: width
+    seed: 123, width: 8, height: 8, depth: 8,
+    min_length: 2, max_length: width
   )
     @rng = Random.new(seed)
     @width = width
     @height = height
     @depth = depth
+    @min_length = min_length
     @max_length = max_length
 
     @matrix = Matrix3D.from_dimensions(width, height, depth, false)
-    @piece_matrixes = []
+    @pieces = []
   end
 
   # Generates a set of puzzle pieces that form a complete 8x8x8 cube
   def generate_pieces
+    piece_matrixes = []
+
     while matrix.any? { |v| v == false }
       piece_matrix = Matrix3D.from_dimensions(width, height, depth, false)
+      next_piece_index = piece_matrixes.size
 
       # Get initial position
       coords = find_initial_coordinates
+
       piece_matrix.set(*coords, true)
-      matrix.set(*coords, true)
+      # Record the piece index in the matrix. Makes it easier
+      # to merge small pieces into adjacent pieces.
+      matrix.set(*coords, next_piece_index)
       unblocked_positions = []
       add_new_position(unblocked_positions, coords)
 
       piece_length = 1
 
+      previous_diff = nil
+
       while piece_length <= max_length && unblocked_positions.any?
-        position_index = unblocked_positions.size.times.to_a.sample(random: rng)
+        # Use the most recent block 70% of the time
+        # Actually it looks much cooler if we do this 100% of the time.
+        position_index = unblocked_positions.size - 1
+        # if rng.rand(10) < 7
+        #   unblocked_positions.size - 1
+        # else
+        #   unblocked_positions.size.times.to_a.sample(random: rng)
+        # end
         position = unblocked_positions[position_index]
         # Update the available moves
         position[:available_moves] = available_moves(position[:coords], matrix)
@@ -46,14 +64,92 @@ class PuzzleGenerator
         # Pick a random move
         x, y, z = position[:available_moves].sample(random: rng)
         piece_matrix.set(x, y, z, true)
-        matrix.set(x, y, z, true)
+        matrix.set(x, y, z, next_piece_index)
         add_new_position(unblocked_positions, [x, y, z])
         piece_length += 1
       end
+
       piece_matrixes << piece_matrix
     end
 
-    piece_matrixes
+    # Merge small pieces into adjacent pieces
+    loop do
+      piece_index = piece_matrixes.find_index do |m|
+        m && m.count { |v| v == true } < min_length
+      end
+      break unless piece_index
+
+      piece_matrix = piece_matrixes[piece_index]
+
+      # Choose a random piece with an adjacent block
+      directions = [
+        [0, 1], [1, 1], [2, 1], [0, -1], [1, -1], [2, -1]
+      ]
+      loop do
+        raise 'Directions should never be empty!' if directions.empty?
+
+        direction = directions.sample(random: rng)
+        directions.delete(direction)
+
+        # puts "Direction:  #{direction}"
+
+        coord = piece_matrix.find_index { |v| v == true }.map(&:dup)
+
+        # puts "Coordinate: #{coord}"
+
+        adjacent_piece_index = piece_index
+        loop do
+          coord[direction[0]] += direction[1]
+          # puts "==========> #{coord}"
+
+          # Keep going until we hit the boundary
+          break unless matrix.within_bounds?(*coord)
+
+          adjacent_piece_index = matrix.get(*coord)
+
+          # Keep going until we leave this piece
+          break if adjacent_piece_index != piece_index
+        end
+
+        next if adjacent_piece_index == piece_index
+
+        adjacent_piece = piece_matrixes[adjacent_piece_index]
+
+        # Add this piece's blocks to the adjacent piece
+        piece_matrix.array.each_with_index do |plane, z|
+          plane.each_with_index do |rows, y|
+            rows.each_with_index do |value, x|
+              next unless value == true
+
+              adjacent_piece.set(x, y, z, true)
+
+              # Update the index in the main matrix
+              matrix.set(x, y, z, adjacent_piece_index)
+            end
+          end
+        end
+
+        break
+      end
+
+      # Important - Don't delete the pieces! This screws up the
+      # indexes in the matrix. Just set them to nil
+      piece_matrixes[piece_index] = nil
+    end
+
+    piece_matrixes.each do |pm|
+      next if pm.nil?
+
+      # Trim the matrix down to the minimum size.
+      trim_result = pm.trim(true)
+
+      # Use the offset as the piece position
+      pieces << [trim_result[:offset], trim_result[:matrix]]
+    end
+
+    # binding.pry
+
+    pieces
   end
 
   def add_new_position(positions, coords)
@@ -92,19 +188,6 @@ class PuzzleGenerator
       end
     end
     available_moves
-  end
-
-  # Finds a random position to start from
-  def pick_random_position(positions)
-    position = positions.sample(random: rng)
-
-    # Check if the piece can move in any direction
-
-    tree.each do |node|
-      unblocked_nodes << node unless node[:blocked]
-
-      node[:leaves]
-    end
   end
 
   def find_initial_coordinates

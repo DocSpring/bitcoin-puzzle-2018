@@ -14,6 +14,9 @@ class BaseScene
 
   BOX_GEOMETRY = Mittsu::BoxGeometry.new(1.0, 1.0, 1.0)
 
+  AXIS_LENGTH = 20.0
+  AXIS_WIDTH = 0.02
+
   X_AXIS = Mittsu::Vector3.new(1.0, 0.0, 0.0)
   Y_AXIS = Mittsu::Vector3.new(0.0, 1.0, 0.0)
 
@@ -66,15 +69,15 @@ class BaseScene
   def add_axis
     axis_object = Mittsu::Object3D.new
     axis_object.add(Mittsu::Mesh.new(
-                      Mittsu::BoxGeometry.new(10.0, 0.05, 0.05),
+                      Mittsu::BoxGeometry.new(AXIS_LENGTH, AXIS_WIDTH, AXIS_WIDTH),
                       Mittsu::MeshBasicMaterial.new(color: 0xff0000, opacity: 0.2)
                     ))
     axis_object.add(Mittsu::Mesh.new(
-                      Mittsu::BoxGeometry.new(0.05, 10.0, 0.05),
+                      Mittsu::BoxGeometry.new(AXIS_WIDTH, AXIS_LENGTH, AXIS_WIDTH),
                       Mittsu::MeshBasicMaterial.new(color: 0x00ff00, opacity: 0.2)
                     ))
     axis_object.add(Mittsu::Mesh.new(
-                      Mittsu::BoxGeometry.new(0.05, 0.05, 10.0),
+                      Mittsu::BoxGeometry.new(AXIS_WIDTH, AXIS_WIDTH, AXIS_LENGTH),
                       Mittsu::MeshBasicMaterial.new(color: 0x0000ff, opacity: 0.2)
                     ))
     scene.add(axis_object)
@@ -125,6 +128,9 @@ class BaseScene
     when GLFW_KEY_R
       puts 'Reset camera zoom and rotation'
       set_default_camera_zoom_and_rotation
+    when GLFW_KEY_Q
+      puts 'Quitting...'
+      exit
     end
   end
 

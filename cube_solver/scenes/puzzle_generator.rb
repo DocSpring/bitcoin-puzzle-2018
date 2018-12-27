@@ -1,3 +1,4 @@
+#!/usr/bin/env ruby
 # frozen_string_literal: true
 
 require_relative 'base_scene'
@@ -13,7 +14,7 @@ class PuzzleGeneratorScene < BaseScene
     0xddee11
   ].freeze
 
-  attr_accessor :cube_group, :puzzle_pieces, :piece_index
+  attr_accessor :size, :cube_group, :puzzle_generator, :puzzle_pieces, :piece_index
 
   def initialize
     super
@@ -21,13 +22,29 @@ class PuzzleGeneratorScene < BaseScene
     @cube_group = Mittsu::Group.new
     @scene.add(@cube_group)
 
-    @puzzle_pieces = PuzzleGenerator.new(
-      seed: 123,
-      width: 3,
-      height: 3,
-      depth: 3,
-      max_length: 3
-    ).generate_pieces
+    @size = (ARGV[0] || '3').to_i
+    min_length = [(size / 2).ceil, 4].max
+    max_length = size * 2
+
+    if size == 8
+      min_length = 16
+      max_length = 28
+    end
+
+    camera.position.z = 14.0
+    camera.zoom = size < 5 ? 2.5 : 0.75
+    camera.update_projection_matrix
+
+    puts "==> Puzzle size: #{size}"
+    @puzzle_generator = PuzzleGenerator.new(
+      seed: 124,
+      width: size,
+      height: size,
+      depth: size,
+      min_length: min_length,
+      max_length: max_length
+    )
+    @puzzle_pieces = puzzle_generator.generate_pieces
 
     @piece_index = 0
 
@@ -37,15 +54,33 @@ class PuzzleGeneratorScene < BaseScene
   end
 
   def add_matrix
-    puts "Showing piece: #{piece_index + 1} / #{puzzle_pieces.size}"
+    current_piece = puzzle_pieces[piece_index]
 
-    puzzle_pieces.each_with_index do |matrix, current_piece_index|
+    puts "Showing piece: #{piece_index + 1} / #{puzzle_pieces.size} " \
+      "(#{current_piece[0].join(', ')})"
+
+    puzzle_pieces.each_with_index do |piece, current_piece_index|
+      x_offset, y_offset, z_offset = piece[0]
+      matrix = piece[1]
+
+      # Center the pieces in the window
+      x_offset -= (puzzle_generator.width - 1) / 2
+      y_offset -= (puzzle_generator.height - 1) / 2
+      z_offset -= (puzzle_generator.depth - 1) / 2
+
       matrix.array.each_with_index do |z_plane, z|
         z_plane.each_with_index do |rows, y|
           rows.each_with_index do |value, x|
             next if value == false
 
-            opacity = current_piece_index == piece_index ? 1.0 : 0.2
+            opacity =
+              if current_piece_index == piece_index
+                1
+              elsif size < 5
+                0.2
+              else
+                0.08
+              end
 
             material = Mittsu::MeshLambertMaterial.new(
               color: COLORS[current_piece_index % COLORS.size],
@@ -53,7 +88,11 @@ class PuzzleGeneratorScene < BaseScene
               transparent: true
             )
             cube = Mittsu::Mesh.new(BOX_GEOMETRY, material)
-            cube.position.set(x - 1, y * -1 + 1, z * -1 + 1)
+            cube.position.set(
+              x + x_offset,
+              (y + y_offset) * -1,
+              (z + z_offset) * -1
+            )
             cube_group.add(cube)
           end
         end
@@ -76,7 +115,7 @@ class PuzzleGeneratorScene < BaseScene
       @piece_index = 0 if @piece_index >= @puzzle_pieces.size
     when GLFW_KEY_DOWN
       @piece_index -= 1
-      @piece_index = @puzzle_pieces.size if @piece_index < 0
+      @piece_index = @puzzle_pieces.size - 1 if @piece_index < 0
     else
       return
     end
