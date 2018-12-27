@@ -17,6 +17,7 @@
 # See http://rubydoc.info/gems/rspec-core/RSpec/Core/Configuration
 
 require 'pry-byebug'
+require 'awesome_print'
 require 'simplecov'
 
 $LOAD_PATH << File.expand_path('../lib', __dir__)

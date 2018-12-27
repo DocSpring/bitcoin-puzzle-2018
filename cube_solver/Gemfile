@@ -8,6 +8,7 @@ gem "rspec"
 gem "simplecov"
 gem "rubocop"
 gem "pry-byebug"
+gem "awesome_print"
 gem "facets", require: false
 
 gem 'mittsu'

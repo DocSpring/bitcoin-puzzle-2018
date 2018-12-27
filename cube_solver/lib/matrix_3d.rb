@@ -23,6 +23,16 @@ class Matrix3D
     new(width, height, depth, array)
   end
 
+  def self.from_dimensions(width, height, depth, initial_value = nil)
+    # Don't use the "*" operator here, it uses a copy of the array
+    array = Array.new(depth) do
+      Array.new(height) do
+        Array.new(width) { initial_value }
+      end
+    end
+    new(width, height, depth, array)
+  end
+
   def rotate_x(degrees)
     Matrix3D::Rotation.rotate_x(self, degrees)
   end
@@ -33,5 +43,31 @@ class Matrix3D
 
   def rotate_z(degrees)
     Matrix3D::Rotation.rotate_z(self, degrees)
+  end
+
+  def all?(&block)
+    array.all? { |plane| plane.all? { |row| row.all?(&block) } }
+  end
+
+  def any?(&block)
+    array.any? { |plane| plane.any? { |row| row.any?(&block) } }
+  end
+
+  def find_index
+    array.each_with_index do |plane, z|
+      plane.each_with_index do |rows, y|
+        rows.each_with_index do |value, x|
+          return [x, y, z] if yield(value)
+        end
+      end
+    end
+  end
+
+  def get(x, y, z)
+    array[z][y][x]
+  end
+
+  def set(x, y, z, value)
+    array[z][y][x] = value
   end
 end
