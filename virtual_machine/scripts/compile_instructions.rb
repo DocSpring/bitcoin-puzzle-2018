@@ -2,6 +2,8 @@
 # frozen_string_literal: true
 
 require_relative '../lib/string_compiler.rb'
+require 'fileutils'
+FileUtils.mkdir_p(File.expand_path('../build', __dir__))
 
 instructions = File.read(File.expand_path('../instructions.txt', __dir__))
 

@@ -5,6 +5,8 @@ require 'pry-byebug'
 require 'json'
 require 'yaml'
 require 'msgpack'
+require 'fileutils'
+FileUtils.mkdir_p(File.expand_path('../build', __dir__))
 
 TESTS = JSON.parse(File.read(File.expand_path('../spec/tests.json', __dir__)))
 
