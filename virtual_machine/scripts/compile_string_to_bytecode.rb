@@ -6,15 +6,16 @@
 
 require_relative '../lib/string_compiler.rb'
 
+ascii = !ARGV.delete('--ascii').nil?
+encrypt = !ARGV.delete('--encrypt').nil?
+compact = !ARGV.delete('--compact').nil?
+
 input =
   if ARGV.last == '-'
     STDIN.read
   else
     ARGV.shift || 'Hello world!'
   end
-ascii = ARGV.include?('--ascii')
-encrypt = ARGV.include?('--encrypt')
-compact = ARGV.include?('--compact')
 
 output = StringCompiler.new(
   input,
