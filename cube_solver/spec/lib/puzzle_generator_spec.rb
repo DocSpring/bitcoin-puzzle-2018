@@ -9,13 +9,13 @@ RSpec.describe PuzzleGenerator do
       min_length: 2, max_length: 4
     ).generate_pieces
 
-    expect(pieces.size).to eq 7
+    expect(pieces.size).to eq 6
     piece_matrixes = pieces.map { |p| p[1].array }
     piece_coords = pieces.map { |p| p[0] }
     # puts piece_matrixes.inspect
     # puts piece_coords.inspect
 
-    expect(piece_matrixes).to eq [[[[true], [true], [false]], [[true], [true], [true]]], [[[true, false], [true, true]], [[false, false], [true, true]]], [[[true, true], [false, false]], [[true, true], [false, true]]], [[[true, true, false], [true, true, true]]], [[[true, true], [true, true]]], [[[true], [true]]], [[[true]]]]
-    expect(piece_coords).to eq [[2, 0, 1], [0, 1, 1], [0, 0, 0], [0, 1, 0], [0, 0, 2], [2, 0, 0], [2, 2, 1]]
+    expect(piece_matrixes).to eq [[[[true, false], [true, false]], [[false, true], [true, true]]], [[[false, true, true], [true, true, true]]], [[[false, false, true], [false, false, false]], [[false, true, true], [true, true, false]]], [[[true, false], [false, false]], [[true, true], [true, false]], [[true, false], [false, false]]], [[[false, false, false], [true, true, true]], [[false, false, true], [false, false, true]]], [[[true]], [[true]]]]
+    expect(piece_coords).to eq [[1, 1, 1], [0, 0, 0], [0, 0, 1], [0, 0, 0], [0, 1, 0], [0, 2, 1]]
   end
 end

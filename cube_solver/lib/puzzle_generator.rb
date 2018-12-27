@@ -41,8 +41,6 @@ class PuzzleGenerator
 
       piece_length = 1
 
-      previous_diff = nil
-
       while piece_length <= max_length && unblocked_positions.any?
         # Use the most recent block 70% of the time
         # Actually it looks much cooler if we do this 100% of the time.
