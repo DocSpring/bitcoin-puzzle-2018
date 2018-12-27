@@ -4,7 +4,7 @@ class Matrix3D
   module DimensionCalculator
     # Returns the width, height, and depth
     def self.array_dimensions(array)
-      return [0, 0, 0] if array.empty?
+      return [0, 0, 0] if !array || array.empty?
 
       width = 0
       height = 0
