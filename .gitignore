@@ -1,0 +1,5 @@
+.DS_Store
+/.bundle
+.byebug_history
+coverage
+build
