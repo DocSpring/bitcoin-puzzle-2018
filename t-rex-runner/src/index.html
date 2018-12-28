@@ -37,7 +37,12 @@
               jstcache="0"
             ></a>
           </h1>
-          <p jsselect="summary" jsvalues=".innerHTML:msg" jstcache="2">
+          <p
+            id="summary-msg"
+            jsselect="summary"
+            jsvalues=".innerHTML:msg"
+            jstcache="2"
+          >
             <strong jscontent="hostName" jstcache="22"> formapi.io </strong>
             refused to connect.
           </p>
@@ -51,7 +56,6 @@
                 <div id="error-information-popup-content" jstcache="0">
                   <div
                     id="suggestions-list"
-                    style=""
                     jsdisplay="(suggestionsSummaryList &amp;&amp; suggestionsSummaryList.length)"
                     jstcache="16"
                   >
@@ -65,6 +69,7 @@
                       class=""
                     >
                       <li
+                        id="suggestion1"
                         jsselect="suggestionsSummaryList"
                         jsvalues=".innerHTML:summary"
                         jstcache="21"
@@ -81,6 +86,7 @@
                         >?
                       </li>
                       <li
+                        id="suggestion2"
                         jsselect="suggestionsSummaryList"
                         jsvalues=".innerHTML:summary"
                         jstcache="21"

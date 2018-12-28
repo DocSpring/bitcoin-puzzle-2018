@@ -5,11 +5,7 @@ require 'msgpack'
 
 test_type = nil
 TESTS =
-  if ENV['JSON']
-    test_type = :json
-    puts 'Running tests from build/tests.json...'
-    JSON.parse(File.read(File.expand_path('../../build/tests.json', __dir__)))
-  elsif ENV['BINARY']
+  if ENV['BINARY']
     test_type = :binary
     puts 'Running tests from build/tests.bin...'
     MessagePack.unpack(File.read(File.expand_path('../../build/tests.bin', __dir__)))

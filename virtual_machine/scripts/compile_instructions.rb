@@ -22,24 +22,26 @@ obfuscated_instructions = StringCompiler.new(
 # Converted from hex to binary
 binary_obfuscated_instructions = obfuscated_instructions.scan(/../).map(&:hex).pack('C*')
 
-puts 'Writing build/program.exe...'
-File.open(File.expand_path('../build/program.exe', __dir__), 'w') do |f|
+filename = '../build/stage3.exe'
+
+puts "Writing #{filename}..."
+File.open(File.expand_path(filename, __dir__), 'w') do |f|
   f.write binary_obfuscated_instructions
 end
 
-part_three = File.read(File.expand_path('../part-three.txt', __dir__))
+# part_three = File.read(File.expand_path('../part-three.txt', __dir__))
 
-obfuscated_part_three = StringCompiler.new(
-  part_three,
-  ascii: true,
-  encrypt: true,
-  compact: true
-).compile
+# obfuscated_part_three = StringCompiler.new(
+#   part_three,
+#   ascii: true,
+#   encrypt: true,
+#   compact: true
+# ).compile
 
-# Converted from hex to binary
-binary_obfuscated_part_three = obfuscated_part_three.scan(/../).map(&:hex).pack('C*')
+# # Converted from hex to binary
+# binary_obfuscated_part_three = obfuscated_part_three.scan(/../).map(&:hex).pack('C*')
 
-puts 'Writing build/btc.exe...'
-File.open(File.expand_path('../build/btc.exe', __dir__), 'w') do |f|
-  f.write binary_obfuscated_part_three
-end
+# puts 'Writing build/btc.exe...'
+# File.open(File.expand_path('../build/btc.exe', __dir__), 'w') do |f|
+#   f.write binary_obfuscated_part_three
+# end

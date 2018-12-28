@@ -13,53 +13,43 @@ Download the Bitcoin whitepaper:
 
     $ curl https://bitcoin.org/bitcoin.pdf -o /tmp/bitcoin.pdf
 
-Make sure the file was downloaded correctly by checking the SHA-256 hash
-of the downloaded PDF:
+Check the SHA-256 hash of the downloaded PDF:
 
     $ sha256sum /tmp/bitcoin.pdf
 
     # => b1674191a88ec5cdd733e4240a81803105dc412d6c6708d53ab94fc248f4f553
 
-Use this PDF file as the input to your VM program. (e.g. If you ran
-`./your_program instructions.exe` to produce this message, then you
-should run `./your_program /tmp/bitcoin.pdf` to execute the contents of the PDF.)
+Now use this PDF file as the input to your VM program.
+For example, if you ran `./your_program stage3.exe` to produce this message,
+then you should run `./your_program /tmp/bitcoin.pdf` to execute the contents
+of the Bitcoin whitepaper PDF.
 
-Your program should print a hex-encoded 256-bit value after executing all
-of the instructions in this PDF. This 256-bit value is the private key
+Your program will print a hex-encoded 256-bit value after executing all
+of the instructions in the PDF. This 256-bit value is the private key
 for a Bitcoin address that contains 0.125 BTC.
 
-Convert this private key to the wallet import format (WIF), so that you can
-import it into Electrum, etc. You can do this with the bitcoin-explorer
-command-line tool: (https://github.com/libbitcoin/libbitcoin-explorer)
-
-    $ echo <hex-encoded private key> | bx base58check-encode -v 128
-
-You can also use this Ruby script: https://gist.github.com/ndbroadbent/522c374d18e6a5d592465ff83d49efe0
-
-More info about WIF: https://en.bitcoin.it/wiki/Wallet_import_format
+Congratulations, you've completed the puzzle! I hope you enjoyed this challenge.
 
 
+If you would like to take credit for the win, you can sign a message
+from the address that you transferred the Bitcoins to.
+(See how the previous winner did it: https://formapi.io/blog/posts/bitcoin-treasure-hunt/)
 
----------------------------------------------------------------------------
+Then you can send me an email at: btc2018@formapi.io
 
+I'd love to hear from you, and I'd also be happy to mention you in the blog post
+with a link to your website or Twitter account.
+But no problem if you'd rather stay anonymous!
 
+Finally, if you enjoyed this puzzle, feel to free to sign up for our puzzle
+mailing list. I'll let you know if we do another one next year (no spam!):
 
- ______                          _  _
-(_____ \                  _     | || |
- _____) ) _____   ____  _| |_   | || |
-|  ____/ (____ | / ___)(_   _)  | || |
-| |      / ___ || |      | |_   | || |
-|_|      \_____||_|       \__)  |_||_|
-
-
-
-https://formapi.io/blog/posts/2018-bitcoin-programming-challenge/86a5d2828a0ae87930057e0d30a4e012f6452a105cad0410c37fbd0c2d87b4bb.html
-
+https://formapi.us1.list-manage.com/subscribe/post?u=2521e9a8706a4584514224aeb&id=26290c6ae4
 
 
 
 ---------------------------------------------------------------------------
-This Bitcoin programming challenge was sponsored by:
+This programming challenge was sponsored by:
 
  ___                _   ___ ___   _
 | __|__ _ _ _ __   /_\ | _ \_ _| (_)___

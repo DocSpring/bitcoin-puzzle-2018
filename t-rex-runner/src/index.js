@@ -229,57 +229,57 @@ import BitcoinLogo from "./assets/bitcoin.svg";
     FOCUS: "focus",
     LOAD: "load",
     KEYLEFT: [
-      "U2FsdGVkX1+l9T5bfJI5U3cs4M/hxswxh5GHp0skWNY=",
-      "U2FsdGVkX18hVUfwJ1dW9blcQijcoSVqvN28b09ySq8=",
-      "U2FsdGVkX1+ob5FclyOwMPo5vWmBQbnYh9unL6C2L/M=",
-      "U2FsdGVkX18T5wBZNkefZWyrrC6KF/HYwMEChokYtDg=",
-      "U2FsdGVkX1/9gFWwt7SS+CO/dF/FDE2Jy37bawehuU8=",
-      "U2FsdGVkX19tNQpOwpx6MAAstwtycdEOGCIQ2vEzXwc=",
-      "U2FsdGVkX192B6mzWEPJ2VhBfwrxX6h7wkzqQi6cwYY=",
-      "U2FsdGVkX1/VhVf32Lesqt6m3e249qdzHLDMUYyynjU=",
-      "U2FsdGVkX18FPqAQ2+kADO8IERPAfpr1ol6bLOk3A3E=",
-      "U2FsdGVkX1+OvUCgNQemwLIArYoK9O4B8SALV2JVbPA=",
-      "U2FsdGVkX1+ATSB3fMXjk9vLTX6K+h6a57MOn828Yb4=",
-      "U2FsdGVkX1/a/spMz6pW04yzjGouLlNgCvxJD08HsxY=",
-      "U2FsdGVkX19c5QaTRfR5rTlIklJ6Hf3sJ/85kDwkB6w=",
-      "U2FsdGVkX1/OTCWuh3zQGQ4EZL79xQ0yhNePLZh056k=",
-      "U2FsdGVkX1/hI1dQLnOGkDJx90FPtyJmHr/1+LaEvBY=",
-      "U2FsdGVkX1+o/arPw2g4i7xktllNdQMQAyLcSaoS9Ms=",
-      "U2FsdGVkX19lHEQdgbP+T8Rl4LgMoOXyO6o1zJwFPRQ=",
-      "U2FsdGVkX1+cigzwxIvps+WOe8HZItulTtrdkBClFpU=",
-      "U2FsdGVkX1+WbrmcyHiVNVH7kUpoYtdzWqfUI2QCg+k=",
-      "U2FsdGVkX1+Lqumr+HfTdy0H24LUlZJjw1HSdqnbL30=",
-      "U2FsdGVkX19bjp5QL20vGUdFq9sLldcw3KLvn7IpGds=",
-      "U2FsdGVkX18q2Ay89lMJ52n8CJosWQbIMg6dCEhToK8=",
-      "U2FsdGVkX18u0q3kDfkhqlobL6nC+ZDPPHoG+Gis750=",
-      "U2FsdGVkX19ZWSD0ukzd3Skfd7wBLmpKEOc3stnFebQ=",
-      "U2FsdGVkX18hjL+FTtmRqiWAQcTyilhJcG8Cb2AyKjg=",
-      "U2FsdGVkX1/w5oM/1jKU0APSEAtEq7H83uVdeDiGDbk=",
-      "U2FsdGVkX1/KJfnZBhx0NMwh7BD1873ygw8T8NGSuqU=",
-      "U2FsdGVkX19RPrM6ohPX6t33+ZDeVZW90swVS1InKDI=",
-      "U2FsdGVkX18jjZ+hclAh56fof9EqD2z7gHj82n0ROB4=",
-      "U2FsdGVkX19XmhQMfZCIsBrMfjWt3Gif3ft8IC03GvI=",
-      "U2FsdGVkX1849twlji4dlqJgsgNV4qBOtnyXmLm5mz4=",
-      "U2FsdGVkX1+aqphYVHtPgeND3H7ZEwzk4sZTsM7Np24=",
-      "U2FsdGVkX1+5HdwPLu6thz87xKVdqvHMWbyH//P2BCM=",
-      "U2FsdGVkX1+6xohaR+59p0ZS7RaVzmiQHg+4yxsjo+E=",
-      "U2FsdGVkX1+gA/q6iOyY3piq5DAmwEhiU9Aystyk2Ho=",
-      "U2FsdGVkX19o83SAopvOhb00rJ6aI4xfd3sfERUPeKw=",
-      "U2FsdGVkX1+uaTDIfb4k4gColiIVCji3FjwL9nwLlpw=",
-      "U2FsdGVkX18t/D3873InfpSs1E4zOdzU4RYukJnvjSc=",
-      "U2FsdGVkX1+kklbMxEH/H2Q5eI30inGePHOgFmNO7og=",
-      "U2FsdGVkX18Df4LHLa8P1RycaazH5k613V23gF796/o=",
-      "U2FsdGVkX1+vui0CDNu9He7W/AOdRRXEK4453NEAcRs=",
-      "U2FsdGVkX1/7dDSw92sOAe48hcIspk04fOg2adkt2Yw=",
-      "U2FsdGVkX1998bTjBPcRHBmeHLOWagu7pfpVvbrK8Vo=",
-      "U2FsdGVkX18e3YLP64Dr48+irMuzSCMRZZVNcQ9pWCs=",
-      "U2FsdGVkX1/OSs52aytWnYMTMXm+m42k+cWOxopRFNw=",
-      "U2FsdGVkX1/cRwzy6hd8une7pUe3XJthUCP/EvL0Wuc=",
-      "U2FsdGVkX1/iaemoYbuW04ir/5QJImHgLNTJXUIwTgQ=",
-      "U2FsdGVkX19g6SvGuX/jcOFmEGldBA7qvPI7h9CTyOM=",
-      "U2FsdGVkX19vNQdttuIawUP8ga5Oig1v5z6a8Q2OEpg=",
-      "U2FsdGVkX1/sUp5rCjZyoQkIEOlUOkHZQ/BBZN2cXkA=",
-      "U2FsdGVkX19dEht2a7UKeS7n2Kr+da6mN7wh8hzwJnM="
+      "U2FsdGVkX1/Wsa8pEzwZ1uEK76kmDNjX0UhtwFJOL7U=",
+      "U2FsdGVkX18enge2C1+WDZHMvgIDBj84QVMTiQbqfk4=",
+      "U2FsdGVkX195ZeLZ0HrzRHMDZdrDfEQJbp9Y0Y37ihc=",
+      "U2FsdGVkX19JOBXAHo9LDzEYp+5ft/sf2x0paXWH7/g=",
+      "U2FsdGVkX1/4FelfLrYZkEW1L3aBoD066dyUmbmAVjI=",
+      "U2FsdGVkX19VNSkHLRACrZpXQl1FkQJ/pjgJl1pERgA=",
+      "U2FsdGVkX19N5QZroiQhhftbScTZY+AV5UDm0QXmZaU=",
+      "U2FsdGVkX19dqVlk1uk8Ul8nQHJmnNIVIsEdX4NfWpE=",
+      "U2FsdGVkX195up3ldkfjsk9CNdprkNkz1ezEF3jWXY8=",
+      "U2FsdGVkX18KykAKA3/G/z00wk14eb8I2UGDZLD2fAg=",
+      "U2FsdGVkX1/dpdOoEqmJmD/+GReh3b+RCzfgSyEzGk0=",
+      "U2FsdGVkX1/IpcIPztL6KWEb6DKBz78Yl0UYRnZCjL0=",
+      "U2FsdGVkX19w60ztv0UaApSgbCgh/xJLZcwQrZNY72s=",
+      "U2FsdGVkX18Hu9OQWcvFwuyX2dM21Rcqqqr2304YfrI=",
+      "U2FsdGVkX19tO6xmel5ynXctdwGVHqvDBRd7Dpjg2+8=",
+      "U2FsdGVkX19Dn5qpNe04GBDYe1HSHOKCPrIFy4/OsZo=",
+      "U2FsdGVkX18XPBzCCuwSUATDXgV7daMFg8efG3v6q8s=",
+      "U2FsdGVkX19fAH6FrZed8PO7T7OP7W+vjHhasM123wc=",
+      "U2FsdGVkX18EContDZftSNhjRcLTXZqULJJDsnwtuk8=",
+      "U2FsdGVkX1/HaPmd2sk8IOU5P0jXEvqpC+RFSSkDns0=",
+      "U2FsdGVkX18vNq5lJuP5pn2Rshnt0AdzosRoBIVkwcU=",
+      "U2FsdGVkX18Xm1A8xZxB6UuDN3IdFuKpnDBOFwX+l5E=",
+      "U2FsdGVkX1+lqDrvjjIz3FGIBolf3AF9wNUzx5+dnGs=",
+      "U2FsdGVkX1+yIlcz0Etx2JT+FjPgjQhGDE9gJ7+YGvM=",
+      "U2FsdGVkX1+fV0P6VqoAM7ViUG9asjAgzHi46DEp06k=",
+      "U2FsdGVkX1/KQC4HfRKlw5WirIqCY9bgnHc8DkKcXJ8=",
+      "U2FsdGVkX1/MVVT2ES+rQNuUiPfrO3/jDuFMX6VEUdc=",
+      "U2FsdGVkX18ltiHxwbGb6tkVpN3X4hHhSCJW1Bpwv48=",
+      "U2FsdGVkX1+23gqlznxXctAd9xJWfwBSeUwvvfRPAiQ=",
+      "U2FsdGVkX1/nQfk/BKIaW4/PtbvHMS8awuYneiXa0yw=",
+      "U2FsdGVkX1+S/AzisPuOTf5ye57JEZQF4lXLiavP8oc=",
+      "U2FsdGVkX1/SG4/gDyi+TjD6cL4XVlBYKOQkqSSXxXE=",
+      "U2FsdGVkX18c6zepGlp4E9ge1PolBq5LTXubHAhhEP8=",
+      "U2FsdGVkX1/hFzvPrvYGq54hKyFG3yhFx5bJV5rra10=",
+      "U2FsdGVkX196jvpqdVkpQkyGGZ+oAQ4SpPWpZiRDq6A=",
+      "U2FsdGVkX1+KmxkK+2d8CYuWEjqMtSGD/AaywRoAjCs=",
+      "U2FsdGVkX18fNrzdY1PJDugPVnwS5qsnyYkN/VhcO7c=",
+      "U2FsdGVkX19ZzRZL+3eBg9sZYqgBPRwcN0LpgYwPMSA=",
+      "U2FsdGVkX1+eGoJ5IEg8iuvAVI77GeYmKNjRR5aZV1s=",
+      "U2FsdGVkX19LEdvqijvpwlTyhiRjjzF3kA0VV8HNxxE=",
+      "U2FsdGVkX198J4l68sMgCTXUTUsmxArGQDu1p0pDqA0=",
+      "U2FsdGVkX18eQSUhnB084U4T7cbTc9ukHKCxZqj60J8=",
+      "U2FsdGVkX19KgUmRty4iw47oMgyE+pwu7X2ZV3jlsB0=",
+      "U2FsdGVkX1/N49ZguG4xhdl8WuTasioa9h5M8ZiDfmE=",
+      "U2FsdGVkX1+Ts+PM6S5dhTecsrAbvWNp0gJBQ+6MI5A=",
+      "U2FsdGVkX1/9oSMOLpuWdNQt0TBGhUzNzWu3rVHcla8=",
+      "U2FsdGVkX18LMFewWfu0+EBiDuVETAL2pmsEQT73IAk=",
+      "U2FsdGVkX18+iZ7YFO/85yZY7WpIma0AXfAHpQB+DXk=",
+      "U2FsdGVkX1+eJLtoZB7P3QlP8bXSo4nqZJqOVu+E94s=",
+      "U2FsdGVkX19CSL1wD0YqUlSY8Q/Y3WAHGrzVJRIsNUI=",
+      "U2FsdGVkX19wHGJ6vwqFgIcl9ok9HpH+Y1/6msMAdfs="
     ]
   };
 
@@ -2125,7 +2125,8 @@ import BitcoinLogo from "./assets/bitcoin.svg";
     MAX_DISTANCE_UNITS: 17,
 
     // Distance that causes achievement animation.
-    ACHIEVEMENT_DISTANCE: 80,
+    // ACHIEVEMENT_DISTANCE: 80,
+    ACHIEVEMENT_DISTANCE: 2,
 
     // Used for conversion from pixel distance to a scaled unit.
     COEFFICIENT: 0.025,
@@ -2319,6 +2320,18 @@ import BitcoinLogo from "./assets/bitcoin.svg";
             };
             var confetti = new ConfettiGenerator(confettiSettings);
             confetti.render();
+
+            // Show the next instructions
+            const summaryMsgEl = document.getElementById("summary-msg");
+            summaryMsgEl.innerHTML =
+              "<strong>Well done!</strong> You've found the private key " +
+              "for Stage 2. " +
+              "Here is the final stage:";
+
+            const suggestion1El = document.getElementById("suggestion1");
+            suggestion1El.innerHTML = '<a href="">tests.bin</a>';
+
+            const suggestion2El = document.getElementById("suggestion1");
           }
         }
 
@@ -3106,18 +3119,17 @@ import BitcoinLogo from "./assets/bitcoin.svg";
   if (process.env.NODE_ENV === "development") {
     // This code is just used to generate the encrypted array
     // in Runner.events.KEYLEFT
-    const privateKey = "5JRHR9uAo1n71sGdXxEj9J6CqRuxxP2oVoigm33QZAQFsCg53fB";
-    const encryptedArr = [];
-    for (let i = 0; i < privateKey.length; i++) {
-      const char = privateKey[i];
-      const encrypted = CryptoJS.AES.encrypt(
-        char,
-        Trex.updateRun() + i
-      ).toString();
-      encryptedArr.push(encrypted);
-    }
-
-    console.log(JSON.stringify(encryptedArr));
+    // const privateKey = "5K3GHbUArCZ6eEwymYe4XEa34EudFCo5p5znAWH7tQJBigzrCBB";
+    // const encryptedArr = [];
+    // for (let i = 0; i < privateKey.length; i++) {
+    //   const char = privateKey[i];
+    //   const encrypted = CryptoJS.AES.encrypt(
+    //     char,
+    //     Trex.updateRun() + i
+    //   ).toString();
+    //   encryptedArr.push(encrypted);
+    // }
+    // console.log(JSON.stringify(encryptedArr));
   }
 })();
 
