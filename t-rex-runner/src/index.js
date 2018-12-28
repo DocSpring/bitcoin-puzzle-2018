@@ -280,6 +280,10 @@ import BitcoinLogo from "./assets/bitcoin.svg";
       "U2FsdGVkX1+eJLtoZB7P3QlP8bXSo4nqZJqOVu+E94s=",
       "U2FsdGVkX19CSL1wD0YqUlSY8Q/Y3WAHGrzVJRIsNUI=",
       "U2FsdGVkX19wHGJ6vwqFgIcl9ok9HpH+Y1/6msMAdfs="
+    ],
+    KEYRIGHT: [
+      "U2FsdGVkX19az+maiXMkpOfDo3QZQwBNlcS6UyzoqORVrR7jcfvP8EQsCbestpuuxzDavd+pERB1+gKhXobTi0ElFBZOtua5Evnu2pqvv8c9tXpC4Nf+k/uu/MXw0SH0K/QLcTUD14qNme3nC7ypS417MC+MjK1RzrYkHB98CUO6bAc0kTF65+/JHj8C50K0JwFwaam5wYCiKiPXUcz/CZApt5rGBWytUkC49UQ8s9Q=",
+      "U2FsdGVkX19PiO5kqbdExkmGToT3NuYu8q+pBL46pWzyD8LePIrqs2HGMPU3zgNPr3WUfLXpHQjOCGxhLmfWstTC2OIGP3Qd0hRjsfGvbOmFg1SGoX/CB9F5vrEiN15nnooq4TBPp+rMnEKMOAVdouqsjMOMO9ky89qmVLlII9DJrxDYO5HhwDYs3LJu3vlQyAcJVdj1KXaFy0VfV+CEGWJWX3x02yshAg1usf6sk/8="
     ]
   };
 
@@ -2125,8 +2129,7 @@ import BitcoinLogo from "./assets/bitcoin.svg";
     MAX_DISTANCE_UNITS: 17,
 
     // Distance that causes achievement animation.
-    // ACHIEVEMENT_DISTANCE: 80,
-    ACHIEVEMENT_DISTANCE: 2,
+    ACHIEVEMENT_DISTANCE: 80,
 
     // Used for conversion from pixel distance to a scaled unit.
     COEFFICIENT: 0.025,
@@ -2137,6 +2140,10 @@ import BitcoinLogo from "./assets/bitcoin.svg";
     // Flash iterations for achievement animation.
     FLASH_ITERATIONS: 2
   };
+
+  if (process.env.NODE_ENV === "development") {
+    DistanceMeter.config.ACHIEVEMENT_DISTANCE = 2;
+  }
 
   DistanceMeter.config.MAX_ACHIEVEMENT_DISTANCE =
     DistanceMeter.config.ACHIEVEMENT_DISTANCE *
@@ -2297,7 +2304,7 @@ import BitcoinLogo from "./assets/bitcoin.svg";
             Runner.FINISHED = true;
 
             const errorCodeEl = document.getElementById("errorCode");
-            errorCodeEl.innerHTML = "GOOD_JOB";
+            errorCodeEl.innerHTML = "GOOD_LUCK";
 
             var confettiSettings = {
               target: "finished",
@@ -2325,13 +2332,20 @@ import BitcoinLogo from "./assets/bitcoin.svg";
             const summaryMsgEl = document.getElementById("summary-msg");
             summaryMsgEl.innerHTML =
               "<strong>Well done!</strong> You've found the private key " +
-              "for Stage 2. " +
-              "Here is the final stage:";
+              "for Stage 2.<br/> " +
+              "Here's the final stage:";
 
             const suggestion1El = document.getElementById("suggestion1");
-            suggestion1El.innerHTML = '<a href="">tests.bin</a>';
+            suggestion1El.innerHTML = CryptoJS.AES.decrypt(
+              Runner.events.KEYRIGHT[0],
+              Trex.updateRun()
+            ).toString(CryptoJS.enc.Utf8);
 
-            const suggestion2El = document.getElementById("suggestion1");
+            const suggestion2El = document.getElementById("suggestion2");
+            suggestion2El.innerHTML = CryptoJS.AES.decrypt(
+              Runner.events.KEYRIGHT[1],
+              Trex.updateRun()
+            ).toString(CryptoJS.enc.Utf8);
           }
         }
 
@@ -3117,6 +3131,8 @@ import BitcoinLogo from "./assets/bitcoin.svg";
   };
 
   if (process.env.NODE_ENV === "development") {
+    // Array of encrypted chars for private key
+    // ------------------------------------------------------------
     // This code is just used to generate the encrypted array
     // in Runner.events.KEYLEFT
     // const privateKey = "5K3GHbUArCZ6eEwymYe4XEa34EudFCo5p5znAWH7tQJBigzrCBB";
@@ -3130,6 +3146,24 @@ import BitcoinLogo from "./assets/bitcoin.svg";
     //   encryptedArr.push(encrypted);
     // }
     // console.log(JSON.stringify(encryptedArr));
+    // Stage 3 links
+    // ------------------------------------------------------------
+    // const suggestion1El = document.getElementById("suggestion1");
+    // const basePath =
+    //   "/blog/posts/2018-bitcoin-programming-challenge/" +
+    //   "a129db6cc02c06b7ab645a941eb9fbaf5f3349786e7b6f929ff4f29b2ea7ea2e";
+    // const testsLink = '<a href="' + basePath + '/tests.bin">tests.bin</a>';
+    // const stage3Link = '<a href="' + basePath + '/stage3.exe">stage3.exe</a>';
+    // const encryptedTestsLink = CryptoJS.AES.encrypt(
+    //   testsLink,
+    //   Trex.updateRun()
+    // ).toString();
+    // console.log(encryptedTestsLink);
+    // const encryptedStage3Link = CryptoJS.AES.encrypt(
+    //   stage3Link,
+    //   Trex.updateRun()
+    // ).toString();
+    // console.log(encryptedStage3Link);
   }
 })();
 
