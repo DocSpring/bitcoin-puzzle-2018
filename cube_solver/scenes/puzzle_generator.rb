@@ -22,7 +22,7 @@ class PuzzleGeneratorScene < BaseScene
     @cube_group = Mittsu::Group.new
     @scene.add(@cube_group)
 
-    @size = (ARGV[0] || '3').to_i
+    @size = (ARGV[0] || 8).to_i
     min_length = [(size / 2).ceil, 4].max
     max_length = size * 2
 

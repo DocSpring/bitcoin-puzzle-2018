@@ -22,7 +22,7 @@ class PuzzleGenerator
   end
 
   # Generates a set of puzzle pieces that form a complete 8x8x8 cube
-  def generate_pieces
+  def generate_pieces(trim: true)
     piece_matrixes = []
 
     while matrix.any? { |v| v == false }
@@ -137,6 +137,11 @@ class PuzzleGenerator
 
     piece_matrixes.each do |pm|
       next if pm.nil?
+
+      unless trim
+        pieces << [[0, 0, 0], pm]
+        next
+      end
 
       # Trim the matrix down to the minimum size.
       trim_result = pm.trim(true)
