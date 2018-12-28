@@ -19,12 +19,13 @@ class PuzzleGeneratorScene < BaseScene
 
   attr_accessor :size, :cube_group, :puzzle_generator,
                 :puzzle_pieces, :selected_piece_index,
-                :mode
+                :mode, :slideshow, :rotated_matrix
 
   def initialize
     super
 
     @mode = MODES.first
+    @slideshow = false
 
     @cube_group = Mittsu::Group.new
     @scene.add(@cube_group)
@@ -36,6 +37,9 @@ class PuzzleGeneratorScene < BaseScene
     if size == 8
       min_length = 16
       max_length = 28
+    elsif size == 2
+      min_length = 1
+      max_length = 2
     end
 
     camera.position.z = 14.0
@@ -44,7 +48,7 @@ class PuzzleGeneratorScene < BaseScene
 
     puts "==> Puzzle size: #{size}"
     @puzzle_generator = DataPuzzleGenerator.new(
-      seed: 124,
+      seed: (ENV['SEED'] || 124).to_i,
       width: size,
       height: size,
       depth: size,
@@ -81,9 +85,14 @@ class PuzzleGeneratorScene < BaseScene
         z_offset -= (puzzle_generator.depth - 1) / 2
 
         add_piece_matrix(matrix, [x_offset, y_offset, z_offset], index)
+
+        if index == selected_piece_index
+          puts matrix.dimensions.inspect
+          puts matrix.array.inspect
+        end
       end
     when :single_piece
-      matrix = current_piece[1]
+      matrix = rotated_matrix || current_piece[1]
 
       x_offset = 0
       y_offset = 0
@@ -148,19 +157,43 @@ class PuzzleGeneratorScene < BaseScene
   def on_key_typed(key)
     super
 
+    current_piece = puzzle_pieces[selected_piece_index]
+    current_matrix = rotated_matrix || current_piece[1]
+
     case key
     when GLFW_KEY_UP
-      @selected_piece_index += 1
-      @selected_piece_index = 0 if @selected_piece_index >= @puzzle_pieces.size
+      increment_selected_piece_index(1)
     when GLFW_KEY_DOWN
-      @selected_piece_index -= 1
-      @selected_piece_index = @puzzle_pieces.size - 1 if @selected_piece_index < 0
+      increment_selected_piece_index(-1)
     when GLFW_KEY_M
       change_mode
+    when GLFW_KEY_S
+      self.slideshow = !slideshow
+      puts "Set slideshow mode: #{slideshow}"
+      @previous_change_time = nil
+
+    when GLFW_KEY_X
+      puts 'Rotating matrix...'
+      self.rotated_matrix = current_matrix.rotate_x(90)
+      update_matrix
+    when GLFW_KEY_Y
+      self.rotated_matrix = current_matrix.rotate_y(90)
+      update_matrix
+    when GLFW_KEY_Z
+      self.rotated_matrix = current_matrix.rotate_z(90)
+      update_matrix
+
+    when GLFW_KEY_R
+      self.rotated_matrix = nil
     else
       return
     end
+  end
 
+  def increment_selected_piece_index(value)
+    @selected_piece_index += value
+    @selected_piece_index = 0 if @selected_piece_index >= @puzzle_pieces.size
+    @selected_piece_index = @puzzle_pieces.size - 1 if @selected_piece_index < 0
     update_matrix
   end
 
@@ -169,8 +202,14 @@ class PuzzleGeneratorScene < BaseScene
     next_index = 0 if next_index >= MODES.size
     self.mode = MODES[next_index]
     puts "Changed mode: #{mode}"
-
     update_matrix
+  end
+
+  def next_frame
+    if slideshow && (!@previous_change_time || Time.now - @previous_change_time > 0.8)
+      increment_selected_piece_index(1)
+      @previous_change_time = Time.now
+    end
   end
 end
 

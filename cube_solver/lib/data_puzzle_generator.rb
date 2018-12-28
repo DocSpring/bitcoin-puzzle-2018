@@ -30,14 +30,6 @@ class DataPuzzleGenerator < PuzzleGenerator
       end
     end
 
-    pieces = []
-    piece_matrixes.map(&:last).each do |pm|
-      # Trim the matrix down to the minimum size.
-      trim_result = pm.trim { |v| v != -1 }
-
-      # Use the offset as the piece position
-      pieces << [trim_result[:offset], trim_result[:matrix]]
-    end
-    pieces
+    piece_matrixes
   end
 end

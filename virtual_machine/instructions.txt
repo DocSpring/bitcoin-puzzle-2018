@@ -7,27 +7,26 @@
 
 You figured out the instruction set and wrote a VM that passes all the tests!
 
-Well done for getting this far, but the challenge isn't over yet.
-There's a few more steps before you unlock the 0.125 BTC but we've set
-up a small 0.005 BTC prize for the first person who makes it this far.
+Here's the final steps:
 
 Download the Bitcoin whitepaper:
 
     $ curl https://bitcoin.org/bitcoin.pdf -o /tmp/bitcoin.pdf
 
-Check the SHA-256 hash of the downloaded PDF:
+Make sure the file was downloaded correctly by checking the SHA-256 hash
+of the downloaded PDF:
 
     $ sha256sum /tmp/bitcoin.pdf
 
     # => b1674191a88ec5cdd733e4240a81803105dc412d6c6708d53ab94fc248f4f553
 
-Use this PDF file as the input to your program. (e.g. If you ran
+Use this PDF file as the input to your VM program. (e.g. If you ran
 `./your_program instructions.exe` to produce this message, then you
-would run `./your_program /tmp/bitcoin.pdf` to execute the contents of the PDF.)
+should run `./your_program /tmp/bitcoin.pdf` to execute the contents of the PDF.)
 
 Your program should print a hex-encoded 256-bit value after executing all
-of the valid instructions in this PDF. This 256-bit value is the private key
-for a Bitcoin address that contains 0.005 BTC.
+of the instructions in this PDF. This 256-bit value is the private key
+for a Bitcoin address that contains 0.125 BTC.
 
 Convert this private key to the wallet import format (WIF), so that you can
 import it into Electrum, etc. You can do this with the bitcoin-explorer

@@ -134,10 +134,13 @@ class BaseScene
     end
   end
 
+  def next_frame; end
+
   def run!
     fixed_opengl = false
     start_time = Time.now
     renderer.window.run do
+      next_frame
       renderer.render(@scene, @camera)
 
       if !fixed_opengl && Time.now - start_time > 0.5
