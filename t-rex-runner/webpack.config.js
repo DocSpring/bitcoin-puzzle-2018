@@ -108,8 +108,9 @@ module.exports = (env, argv) => {
       new HtmlWebpackPlugin({
         title: "formapi.io",
         template: "src/index.html",
+        // This is the private key from the first stage (cube solver)
         filename:
-          "86a5d2828a0ae87930057e0d30a4e012f6452a105cad0410c37fbd0c2d87b4bb.html"
+          "d63c04bfa19fa546a175ca90f5b9a4bc718f6233a574c6058d57e80b5de12cf5.html"
       })
     ]
   };
