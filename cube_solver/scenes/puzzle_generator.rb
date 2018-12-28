@@ -17,8 +17,8 @@ class PuzzleGeneratorScene < BaseScene
 
   MODES = %i[select_piece all_pieces single_piece].freeze
 
-  attr_accessor :size, :cube_group, :puzzle_generator,
-                :puzzle_pieces, :selected_piece_index,
+  attr_accessor :size, :width, :height, :depth, :cube_group,
+                :puzzle_generator, :puzzle_pieces, :selected_piece_index,
                 :mode, :slideshow, :rotated_matrix
 
   def initialize
@@ -35,31 +35,43 @@ class PuzzleGeneratorScene < BaseScene
     max_length = size * 2
 
     if size == 8
-      min_length = 16
-      max_length = 28
+      min_length = 32
+      max_length = 64
     elsif size == 2
       min_length = 1
       max_length = 2
     end
 
+    @width = size
+    @height = size
+    @depth = size
+
     camera.position.z = 14.0
     camera.zoom = size < 5 ? 2.5 : 0.75
     camera.update_projection_matrix
 
-    puts "==> Puzzle size: #{size}"
-    @puzzle_generator = DataPuzzleGenerator.new(
-      seed: (ENV['SEED'] || 124).to_i,
-      width: size,
-      height: size,
-      depth: size,
-      min_length: min_length,
-      max_length: max_length
-    )
+    filename = ARGV[1]
+    if filename
+      @puzzle_pieces = JSON.parse(File.read(filename)).map do |m|
+        [m[0], Matrix3D.from_array(m[1])]
+      end
 
-    bytes = (size * size * size / 8.0).ceil
-    data = SecureRandom.random_bytes(bytes).unpack1('B*').split('').map(&:to_i)
+    else
+      puts "==> Puzzle size: #{size}"
+      @puzzle_generator = DataPuzzleGenerator.new(
+        seed: (ENV['SEED'] || 2323).to_i,
+        width: size,
+        height: size,
+        depth: size,
+        min_length: min_length,
+        max_length: max_length
+      )
 
-    @puzzle_pieces = puzzle_generator.generate_pieces(data)
+      bytes = (size * size * size / 8.0).ceil
+      data = SecureRandom.random_bytes(bytes).unpack1('B*').split('').map(&:to_i)
+
+      @puzzle_pieces = puzzle_generator.generate_pieces(data)
+    end
 
     @selected_piece_index = 0
 
@@ -80,9 +92,9 @@ class PuzzleGeneratorScene < BaseScene
         matrix = piece[1]
 
         # Center the cube in the window
-        x_offset -= (puzzle_generator.width - 1) / 2
-        y_offset -= (puzzle_generator.height - 1) / 2
-        z_offset -= (puzzle_generator.depth - 1) / 2
+        x_offset -= (width - 1) / 2
+        y_offset -= (height - 1) / 2
+        z_offset -= (depth - 1) / 2
 
         add_piece_matrix(matrix, [x_offset, y_offset, z_offset], index)
 

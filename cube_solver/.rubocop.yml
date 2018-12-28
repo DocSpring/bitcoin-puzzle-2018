@@ -6,3 +6,10 @@ Style/NumericPredicate:
 
 Naming/UncommunicativeMethodParamName:
   Enabled: false
+
+Style/Documentation:
+  Enabled: false
+
+# This autocorrect is really annoying
+Lint/UnusedBlockArgument:
+  Enabled: false

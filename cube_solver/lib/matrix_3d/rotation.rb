@@ -6,6 +6,8 @@ class Matrix3D
 
     class << self
       def rotate_x(matrix, degrees)
+        return matrix if degrees == 0
+
         validate_degrees!(degrees)
         rotated_array = matrix.array
         (degrees % 360 / 90).times do
@@ -15,6 +17,8 @@ class Matrix3D
       end
 
       def rotate_y(matrix, degrees)
+        return matrix if degrees == 0
+
         validate_degrees!(degrees)
         rotated_array = matrix.array
         (degrees % 360 / 90).times do
@@ -29,6 +33,8 @@ class Matrix3D
       end
 
       def rotate_z(matrix, degrees)
+        return matrix if degrees == 0
+
         validate_degrees!(degrees)
         rotated_array = matrix.array
         (degrees % 360 / 90).times do

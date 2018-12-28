@@ -91,7 +91,7 @@ class PuzzleGenerator
 
         # puts "Direction:  #{direction}"
 
-        coord = piece_matrix.find_index { |v| v == true }.map(&:dup)
+        coord = piece_matrix.find_coord { |v| v == true }.map(&:dup)
 
         # puts "Coordinate: #{coord}"
 
@@ -114,17 +114,13 @@ class PuzzleGenerator
         adjacent_piece = piece_matrixes[adjacent_piece_index]
 
         # Add this piece's blocks to the adjacent piece
-        piece_matrix.array.each_with_index do |plane, z|
-          plane.each_with_index do |rows, y|
-            rows.each_with_index do |value, x|
-              next unless value == true
+        piece_matrix.each do |value, xa, ya, za|
+          next unless value == true
 
-              adjacent_piece.set(x, y, z, true)
+          adjacent_piece.set(xa, ya, za, true)
 
-              # Update the index in the main matrix
-              matrix.set(x, y, z, adjacent_piece_index)
-            end
-          end
+          # Update the index in the main matrix
+          matrix.set(xa, ya, za, adjacent_piece_index)
         end
 
         break
@@ -206,9 +202,9 @@ class PuzzleGenerator
       break if iterations > width * 2
     end
 
-    position = matrix.find_index { |v| v == false }
-    raise 'Could not find a free position in the matrix!' unless position
+    coord = matrix.find_coord { |v| v == false }
+    raise 'Could not find a free position in the matrix!' unless coord
 
-    position
+    coord
   end
 end

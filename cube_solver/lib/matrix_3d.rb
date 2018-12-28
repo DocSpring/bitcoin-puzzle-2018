@@ -56,13 +56,23 @@ class Matrix3D
     array.any? { |plane| plane.any? { |row| row.any?(&block) } }
   end
 
-  def find_index
+  def none?(&block)
+    !any?(&block)
+  end
+
+  def each
     array.each_with_index do |plane, z|
       plane.each_with_index do |rows, y|
         rows.each_with_index do |value, x|
-          return [x, y, z] if yield(value)
+          yield(value, x, y, z)
         end
       end
+    end
+  end
+
+  def find_coord
+    each do |value, x, y, z|
+      return [x, y, z] if yield(value)
     end
   end
 
@@ -87,5 +97,10 @@ class Matrix3D
   def within_bounds?(x, y, z)
     x >= 0 && y >= 0 && z >= 0 &&
       x < width && y < height && z < depth
+  end
+
+  def initialize_clone(source)
+    super
+    self.array = source.array.map { |p| p.map(&:dup) }
   end
 end

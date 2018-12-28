@@ -8,34 +8,53 @@ require 'securerandom'
 require 'fileutils'
 FileUtils.mkdir_p(File.expand_path('../build', __dir__))
 
+PRIVATE_KEY = 'd63c04bfa19fa546a175ca90f5b9a4bc718f6233a574c6058d57e80b5de12cf5'
+
+filename = ARGV[0] || File.expand_path('../build/blocks.json', __dir__)
+size = (ARGV[1] || 8).to_i
+data = ARGV[2] || PRIVATE_KEY
+
+puts "Filename:    #{filename}"
+puts "Puzzle size: #{size}"
+puts "Data:        #{data}"
+puts
+
 $LOAD_PATH << File.expand_path('../lib', __dir__)
 
 require 'data_puzzle_generator'
 
-private_key_hex = 'd63c04bfa19fa546a175ca90f5b9a4bc718f6233a574c6058d57e80b5de12cf5'
-private_key_bytes = private_key_hex.scan(/../).map(&:hex)
+data_bytes = data.scan(/../).map(&:hex)
 
-random_bytes = SecureRandom.random_bytes(32).unpack('C*')
-
-private_key_xor = private_key_bytes.map.with_index do |b, i|
+# Create the same name of random bytes
+random_bytes = SecureRandom.random_bytes(data_bytes.size).unpack('C*')
+data_xor = data_bytes.map.with_index do |b, i|
   b ^ random_bytes[i]
 end
 
-private_key_xor_plus_random_bytes = private_key_xor + random_bytes
+puzzle_bits = (
+  data_xor + random_bytes
+).pack('C*').unpack1('B*').split('').map(&:to_i)
 
-private_key_xor_plus_random_bits =
-  private_key_xor_plus_random_bytes.pack('C*').unpack1('B*').split('').map(&:to_i)
+if size == 8
+  min_length = 24
+  max_length = 48
+else
+  min_length = (size / 2.0).round
+  max_length = size * 2
+end
 
 puzzle_generator = DataPuzzleGenerator.new(
   seed: 124,
-  width: 8,
-  height: 8,
-  depth: 8,
-  min_length: 16,
-  max_length: 28
+  width: size,
+  height: size,
+  depth: size,
+  min_length: min_length,
+  max_length: max_length
 )
-puts 'Generating 8x8x8 puzzle with encoded private key...'
-piece_matrixes = puzzle_generator.generate_pieces(private_key_xor_plus_random_bits)
+puts "Generating #{size}x#{size}x#{size} puzzle with encoded private key..."
+piece_matrixes = puzzle_generator.generate_pieces(puzzle_bits)
+
+puts "Pieces: #{piece_matrixes.size}"
 
 # Find the piece that sets the first bit at 0,0,0
 first_piece_index = piece_matrixes.find_index { |m| m[1].get(0, 0, 0) != -1 }
@@ -62,7 +81,19 @@ end
 # Add the unscrambled first piece to the beginning
 scrambled_pieces.unshift(first_piece.last)
 
-puts 'Writing ../build/blocks.json'
-File.open(File.expand_path('../build/blocks.json', __dir__), 'w') do |f|
+puts "Writing #{filename}"
+File.open(filename, 'w') do |f|
   f.puts scrambled_pieces.map(&:array).to_json
+end
+
+unscrambled_filename = filename.sub(/\.json$/, '-unscrambled.json')
+puts "Writing #{unscrambled_filename}"
+File.open(unscrambled_filename, 'w') do |f|
+  f.puts piece_matrixes.map { |m| m[1].array }.to_json
+end
+
+visualizer_filename = filename.sub(/\.json$/, '-visualizer.json')
+puts "Writing #{visualizer_filename}"
+File.open(visualizer_filename, 'w') do |f|
+  f.puts piece_matrixes.map { |m| [m[0], m[1].array] }.to_json
 end
