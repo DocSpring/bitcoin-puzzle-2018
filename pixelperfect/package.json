@@ -51,16 +51,5 @@
     "webpack-bundle-analyzer": "^3.0.3",
     "webpack-obfuscator": "^0.18.0",
     "webpackbar": "^3.1.2"
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "lint-staged"
-    }
-  },
-  "lint-staged": {
-    "*.{js,jsx,ts,tsx,json,css,md}": [
-      "prettier --close-empty-jsx-elements true --write",
-      "git add"
-    ]
   }
 }
