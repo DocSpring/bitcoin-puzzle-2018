@@ -4,23 +4,29 @@ a:focus {
   text-decoration: none;
 }
 
-.ant-list-bordered.no-outside-border {
-  border: none;
-}
-
-.ant-list-item-clickable {
-  cursor: pointer;
-
-  &:hover {
-    background: #fafafa;
+.ant-list {
+  .ant-list-bordered.no-outside-border {
+    border: none;
   }
-}
 
-.ant-list-item-disabled {
-  cursor: not-allowed;
-  color: #aaa;
-  &:hover {
-    background: none;
+  .ant-list-item-clickable {
+    cursor: pointer;
+
+    &:hover {
+      background: #fafafa;
+    }
+  }
+
+  .ant-list-item-active {
+    color: @primary-color;
+  }
+
+  .ant-list-item-disabled {
+    cursor: not-allowed;
+    color: #bbb;
+    &:hover {
+      background: none;
+    }
   }
 }
 

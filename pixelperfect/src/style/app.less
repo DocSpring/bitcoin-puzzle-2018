@@ -26,3 +26,24 @@
     width: 200px;
   }
 }
+
+// Center vertically
+.solved-message {
+  height: 100%;
+  background: rgba(0, 0, 0, 0.2);
+  position: relative;
+
+  .ant-alert {
+    margin: 0;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    left: 40px;
+    right: 40px;
+
+    .next-button {
+      background-color: #52c41a;
+      border-color: #52c41a;
+    }
+  }
+}

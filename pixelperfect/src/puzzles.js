@@ -1,10 +1,10 @@
 // Color pallette:
 const RED = '#d11141';
-const PINK = '#ff77aa';
 const GREEN = '#00b159';
 const BLUE = '#00aedb';
-const ORANGE = '#f37735';
-const YELLOW = '#ffc425';
+// const PINK = '#ff77aa';
+// const ORANGE = '#f37735';
+// const YELLOW = '#ffc425';
 
 const PUZZLES = [
   {
@@ -20,7 +20,6 @@ const PUZZLES = [
   background: ${BLUE};
 }`,
   },
-
   {
     html: `<div class="square-rounded"></div>`,
     defaultCSS: `.square-rounded {

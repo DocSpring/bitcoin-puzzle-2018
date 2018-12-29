@@ -7,8 +7,17 @@ import { debounce } from 'lodash-es';
 import html2canvas from 'html2canvas';
 import pixelmatch from 'pixelmatch';
 
-import { Layout, Menu, Breadcrumb, Icon, Card } from 'antd';
-import { List, Progress } from 'antd';
+import {
+  Button,
+  Layout,
+  Menu,
+  Icon,
+  Card,
+  List,
+  Progress,
+  Alert,
+  notification,
+} from 'antd';
 import Editor from 'react-simple-code-editor';
 import { highlight, languages } from 'prismjs/components/prism-core';
 import 'prismjs/themes/prism-solarizedlight.css';
@@ -40,10 +49,51 @@ const PUZZLE_LIST: string[] = PUZZLES.map((_, i) => `Puzzle ${i}`);
 
 type State = {
   collapsed: boolean;
-  puzzleIndex: number;
+  currentPuzzleIndex: number;
+  unlockedPuzzleIndex: number;
   cssCode: string;
   diffPixels: number;
   diffPercentage: number;
+  successVisible: boolean;
+};
+
+const DEBUG = process.env.NODE_ENV === 'development';
+const log = process.env.NODE_ENV === 'development' ? console.log : () => {};
+
+// Not sure why this library is so verbose :/
+const highlightHTML = (html: string) => {
+  return (
+    <Highlight
+      {...prismDefaultProps}
+      code={html}
+      language="html"
+      theme={undefined}
+    >
+      {({
+        className,
+        style,
+        tokens,
+        getLineProps,
+        getTokenProps,
+      }: {
+        className: any;
+        style: any;
+        tokens: any;
+        getLineProps: any;
+        getTokenProps: any;
+      }) => (
+        <pre className={className} style={style}>
+          {tokens.map((line: any, i: any) => (
+            <div {...getLineProps({ line, key: i })}>
+              {line.map((token: any, key: any) => (
+                <span {...getTokenProps({ token, key })} />
+              ))}
+            </div>
+          ))}
+        </pre>
+      )}
+    </Highlight>
+  );
 };
 
 class App extends Component {
@@ -55,21 +105,32 @@ class App extends Component {
   resultImageSelector: (state: State) => ImageData | null;
   diffPixelsFormattedSelector: (state: State) => string;
 
+  renderCSSTimeout: number | undefined;
+  cancelCurrentCSSRender: Function | undefined;
+
   state: State = {
     collapsed: false,
-    puzzleIndex: 0,
+    currentPuzzleIndex: 0,
+    unlockedPuzzleIndex: 0,
     cssCode: PUZZLES[0].defaultCSS,
     diffPixels: 0,
     diffPercentage: 0,
+    successVisible: false,
   };
 
   constructor(props: any) {
     super(props);
 
-    this.checkForCSSUpdates = debounce(this.checkForCSSUpdates, 300);
+    // Load the previous puzzle index from localStorage
+    const unlockedPuzzleIndex = parseInt(
+      localStorage.getItem('unlockedPuzzleIndex') || '0',
+      10
+    );
+    this.state.currentPuzzleIndex = unlockedPuzzleIndex;
+    this.state.unlockedPuzzleIndex = unlockedPuzzleIndex;
 
     this.targetImageSelector = createSelector(
-      (state: State) => state.puzzleIndex,
+      (state: State) => state.currentPuzzleIndex,
       () => {
         const canvas = this.targetCanvas;
         const context = canvas && canvas.getContext('2d');
@@ -79,7 +140,7 @@ class App extends Component {
     );
 
     this.resultImageSelector = createSelector(
-      (state: State) => state.puzzleIndex,
+      (state: State) => state.currentPuzzleIndex,
       (state: State) => state.cssCode,
       () => {
         const canvas = this.resultCanvas;
@@ -93,17 +154,6 @@ class App extends Component {
           targetCanvas.width,
           targetCanvas.height
         );
-      }
-    );
-
-    const targetPixelCountSelector = createSelector(
-      () => this.targetCanvas == null,
-      (state: State) => state.puzzleIndex,
-      () => {
-        const canvas = this.targetCanvas;
-        const context = canvas && canvas.getContext('2d');
-        if (!canvas || !context) return null;
-        return canvas.width * canvas.height;
       }
     );
 
@@ -121,35 +171,81 @@ class App extends Component {
   }
 
   componentDidMount() {
-    const solutionCSS = PUZZLES[this.state.puzzleIndex].solutionCSS;
+    const solutionCSS = PUZZLES[this.state.currentPuzzleIndex].solutionCSS;
     this.renderCSSToTargetCanvas(solutionCSS)
       .then(() => this.renderCSSToResultCanvas(this.state.cssCode))
       .then(() => this.updateImageDiff());
   }
 
   componentDidUpdate(prevProps: any, prevState: State) {
-    this.checkForCSSUpdates(prevState);
+    if (this.state.currentPuzzleIndex !== prevState.currentPuzzleIndex) {
+      // Set default CSS for new puzzle
+      this.setState({
+        cssCode: PUZZLES[this.state.currentPuzzleIndex].defaultCSS,
+      });
+      // Render changes immediately when changing the puzzle
+      this.checkForCSSUpdates(prevState);
+    } else {
+      // Update after a delay when editing CSS
+      this.checkForCSSUpdatesDebounced(prevState);
+    }
+
+    if (this.state.diffPercentage === 100 && prevState.diffPercentage !== 100) {
+      // The current puzzle was just solved.
+      // Unlock the next puzzle (if not already unlocked.)
+      const unlockedPuzzleIndex = Math.max(
+        this.state.currentPuzzleIndex + 1,
+        this.state.unlockedPuzzleIndex
+      );
+      // Update the saved state in localStorage
+      localStorage.setItem(
+        'unlockedPuzzleIndex',
+        unlockedPuzzleIndex.toString()
+      );
+      let successVisible = this.state.successVisible;
+      if (unlockedPuzzleIndex > this.state.unlockedPuzzleIndex) {
+        // Always show the success message when we've unlocked a new puzzle.
+        // (Otherwise, don't keep showing it if the player wants to adjust the CSS.)
+        successVisible = true;
+      }
+
+      this.setState({ successVisible, unlockedPuzzleIndex });
+    }
+
+    // Sanity check to make sure we never show any unlocked puzzles,
+    // even if we have a bug somewhere else.
+    if (this.state.currentPuzzleIndex > this.state.unlockedPuzzleIndex) {
+      this.setState({
+        currentPuzzleIndex: this.state.unlockedPuzzleIndex,
+      });
+    }
   }
 
   checkForCSSUpdates(prevState: State) {
-    const promises = [];
+    if (this.cancelCurrentCSSRender) {
+      log('Cancelling current render...');
+      this.cancelCurrentCSSRender();
+      this.cancelCurrentCSSRender = undefined;
+    }
+
+    let promise = Promise.resolve();
+    if (this.state.currentPuzzleIndex !== prevState.currentPuzzleIndex) {
+      const solutionCSS = PUZZLES[this.state.currentPuzzleIndex].solutionCSS;
+      promise = promise.then(() => this.renderCSSToTargetCanvas(solutionCSS));
+    }
     if (this.state.cssCode !== prevState.cssCode) {
-      promises.push(this.renderCSSToResultCanvas(this.state.cssCode));
+      promise = promise.then(() =>
+        // This also updates the image diff.
+        this.renderCSSToResultCanvas(this.state.cssCode)
+      );
     }
-
-    if (this.state.puzzleIndex !== prevState.puzzleIndex) {
-      const solutionCSS = PUZZLES[this.state.puzzleIndex].solutionCSS;
-      promises.push(this.renderCSSToTargetCanvas(solutionCSS));
-    }
-
-    if (promises.length === 0) return;
-
-    Promise.all(promises).then(() => {
-      this.updateImageDiff();
-    });
+    return promise;
   }
+  checkForCSSUpdatesDebounced = debounce(this.checkForCSSUpdates, 300);
 
   renderCSSToTargetCanvas(css: string) {
+    log('Rendering target canvas...');
+
     return this.renderCSSToCanvas(css, this.targetCanvas).then(() => {
       // After updating the target canvas, we need to update the
       // diff canvas so that the width and height are equal
@@ -165,6 +261,7 @@ class App extends Component {
   }
 
   renderCSSToResultCanvas(css: string) {
+    log('Rendering result canvas...');
     // Whenever we update the result canvas,
     // we also need to update the diff image.
     return this.renderCSSToCanvas(css, this.resultCanvas).then(() =>
@@ -174,11 +271,16 @@ class App extends Component {
 
   renderCSSToCanvas(css: string, canvas: HTMLCanvasElement | null) {
     return new Promise((resolve, reject) => {
+      this.cancelCurrentCSSRender = () => {
+        window.clearTimeout(this.renderCSSTimeout);
+        reject();
+      };
+
       if (!canvas) {
         reject();
         return;
       }
-      const puzzleHTML = PUZZLES[this.state.puzzleIndex].html;
+      const puzzleHTML = PUZZLES[this.state.currentPuzzleIndex].html;
       const renderHTML = `<html>
   <head>
     <style>html, body { margin: 0; padding: 0; }</style>
@@ -195,7 +297,8 @@ class App extends Component {
         left: '-9999px',
       });
       $('body').append($iframe);
-      setTimeout(() => {
+
+      this.renderCSSTimeout = window.setTimeout(() => {
         var iframedoc =
           iframe.contentDocument ||
           (iframe.contentWindow && iframe.contentWindow.document);
@@ -207,12 +310,14 @@ class App extends Component {
         html2canvas(iframedoc.body, { canvas }).then(() => {
           $iframe.remove();
           resolve();
+          this.cancelCurrentCSSRender = undefined;
         });
       }, 10);
     });
   }
 
   updateImageDiff() {
+    log('Rendering image diff...');
     const targetImage = this.targetImageSelector(this.state);
     const resultImage = this.resultImageSelector(this.state);
     if (!targetImage || !resultImage) return;
@@ -233,6 +338,7 @@ class App extends Component {
         threshold: 0.005,
       }
     );
+    diffContext.clearRect(0, 0, width, height);
     diffContext.putImageData(diffImage, 0, 0);
 
     // Calculate the bounds of the diff image,
@@ -268,8 +374,7 @@ class App extends Component {
     const diffTotalPixels = diffWidth * diffHeight;
     const diffPercentage = (1 - diffPixels / diffTotalPixels) * 100;
 
-    console.log({ diffPixels, diffTotalPixels, diffPercentage });
-
+    // Canvas is scaled up 2x on Retina displays, etc.
     if (window.devicePixelRatio === 2) {
       diffPixels = diffPixels / 4;
     }
@@ -279,12 +384,6 @@ class App extends Component {
       diffPixels,
     });
   }
-
-  onCollapse = (collapsed: Boolean) => {
-    const b = <div />;
-    console.log(collapsed);
-    this.setState({ collapsed });
-  };
 
   cardTitle(label: any, icon?: JSX.Element, rightIconType?: string) {
     return (
@@ -299,6 +398,11 @@ class App extends Component {
     );
   }
 
+  highlightedHTMLSelector = createSelector(
+    (state: State) => state.currentPuzzleIndex,
+    puzzleIndex => highlightHTML(PUZZLES[puzzleIndex].html)
+  );
+
   render() {
     const cardStyle = { flex: 1, margin: '5px' };
 
@@ -312,8 +416,8 @@ class App extends Component {
             </div>
 
             <p>
-              Write some CSS that produces the target image. The puzzle is
-              solved when your CSS is 100% pixel perfect.
+              Write CSS that matches the target image. The puzzle is solved when
+              your CSS is 100% pixel perfect.
             </p>
             <p>
               PixelPerfect uses{' '}
@@ -330,18 +434,25 @@ class App extends Component {
             className="no-outside-border"
             bordered
             dataSource={PUZZLE_LIST}
-            renderItem={(item: string, i: number) => {
+            renderItem={(item: string, puzzleIndex: number) => {
               return (
                 <div
                   className={classNames(
                     'ant-list-item',
                     'ant-list-item-clickable',
                     {
-                      'ant-list-item-disabled': i > this.state.puzzleIndex,
+                      'ant-list-item-active':
+                        puzzleIndex === this.state.currentPuzzleIndex,
+                      'ant-list-item-disabled':
+                        puzzleIndex > this.state.unlockedPuzzleIndex,
                     }
                   )}
                   onClick={() => {
-                    console.log('clicked');
+                    // Don't allow any unlocked puzzles
+                    if (puzzleIndex > this.state.unlockedPuzzleIndex) return;
+                    this.setState({
+                      currentPuzzleIndex: puzzleIndex,
+                    });
                   }}
                 >
                   <div className="ant-list-item-content ant-list-item-content-single">
@@ -372,36 +483,7 @@ class App extends Component {
                   style={cardStyle}
                 >
                   <div className="static-code-wrapper overflow-wrapper">
-                    <Highlight
-                      {...prismDefaultProps}
-                      code={PUZZLES[0].html}
-                      language="html"
-                      theme={undefined}
-                    >
-                      {({
-                        className,
-                        style,
-                        tokens,
-                        getLineProps,
-                        getTokenProps,
-                      }: {
-                        className: any;
-                        style: any;
-                        tokens: any;
-                        getLineProps: any;
-                        getTokenProps: any;
-                      }) => (
-                        <pre className={className} style={style}>
-                          {tokens.map((line: any, i: any) => (
-                            <div {...getLineProps({ line, key: i })}>
-                              {line.map((token: any, key: any) => (
-                                <span {...getTokenProps({ token, key })} />
-                              ))}
-                            </div>
-                          ))}
-                        </pre>
-                      )}
-                    </Highlight>
+                    {this.highlightedHTMLSelector(this.state)}
                   </div>
                 </Card>
 
@@ -413,7 +495,8 @@ class App extends Component {
                       href="#"
                       onClick={() => {
                         this.setState({
-                          cssCode: PUZZLES[this.state.puzzleIndex].defaultCSS,
+                          cssCode:
+                            PUZZLES[this.state.currentPuzzleIndex].defaultCSS,
                         });
                       }}
                     >
@@ -435,6 +518,52 @@ class App extends Component {
                       }}
                     />
                   </div>
+
+                  {this.state.diffPercentage === 100 &&
+                    this.state.successVisible && (
+                      <div className="solved-message">
+                        <Alert
+                          message="Puzzle Solved!"
+                          description={
+                            <div>
+                              <p>
+                                Nice work, you've completed Puzzle{' '}
+                                {this.state.currentPuzzleIndex}!
+                              </p>
+                              <Button
+                                type="primary"
+                                className="next-button"
+                                onClick={() => {
+                                  const nextPuzzleIndex =
+                                    this.state.currentPuzzleIndex + 1;
+
+                                  if (
+                                    nextPuzzleIndex >
+                                    this.state.unlockedPuzzleIndex
+                                  ) {
+                                    notification.open({
+                                      message: 'Whoops, something went wrong!',
+                                      description: `You don't have access to Puzzle ${nextPuzzleIndex}!`,
+                                    });
+                                  }
+                                  this.setState({
+                                    currentPuzzleIndex: nextPuzzleIndex,
+                                  });
+                                }}
+                              >
+                                Next Puzzle <Icon type="right" />
+                              </Button>
+                            </div>
+                          }
+                          type="success"
+                          closable
+                          afterClose={() => {
+                            this.setState({ successVisible: false });
+                          }}
+                          showIcon
+                        />
+                      </div>
+                    )}
                 </Card>
               </div>
               <div
