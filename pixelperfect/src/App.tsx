@@ -54,11 +54,8 @@ class App extends Component {
           <Content style={{ padding: '21px' }}>
             <h2>PixelPerfect</h2>
             <p>
-              Write some HTML and CSS that matches the target image. The puzzle
-              isn't solved until your CSS is 100% pixel perfect.
-            </p>
-            <p>
-              (<a href="https://stackoverflow.com/">You might need this</a>.)
+              Write some HTML and CSS that produces the target image. Solve the
+              puzzle by getting your CSS 100% pixel perfect.
             </p>
           </Content>
 

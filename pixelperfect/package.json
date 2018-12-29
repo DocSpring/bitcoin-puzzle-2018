@@ -49,6 +49,7 @@
     "typescript": "^3.1.6",
     "webpack": "4.19.1",
     "webpack-bundle-analyzer": "^3.0.3",
+    "webpack-obfuscator": "^0.18.0",
     "webpackbar": "^3.1.2"
   },
   "husky": {

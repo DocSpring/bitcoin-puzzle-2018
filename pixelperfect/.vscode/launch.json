@@ -7,8 +7,14 @@
     {
       "type": "node",
       "request": "launch",
-      "name": "Launch Program",
+      "name": "yarn start",
       "program": "${workspaceFolder}/node_modules/@craco/craco/scripts/start.js"
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "yarn build",
+      "program": "${workspaceFolder}/node_modules/@craco/craco/scripts/build.js"
     }
   ]
 }
