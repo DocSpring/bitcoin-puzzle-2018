@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="512px" height="512px" viewBox="0 0 512 512" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 52.2 (67145) - http://www.bohemiancoding.com/sketch -->
+    <title>favicon@2x</title>
+    <desc>Created with Sketch.</desc>
+    <g id="favicon" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <rect id="background" fill-rule="nonzero" x="0" y="0" width="512" height="512"></rect>
+        <g id="Group" transform="translate(77.000000, 77.000000)" fill-rule="nonzero">
+            <rect id="square" stroke="#BF1717" stroke-width="38.25" x="19.125" y="19.125" width="201.585729" height="201.585729" rx="30.75"></rect>
+            <rect id="square" stroke="#BF1717" stroke-width="38.25" x="144.289271" y="144.289271" width="201.585729" height="201.585729" rx="30.75"></rect>
+            <rect id="union-upper" fill="#FFFFFF" x="201.61191" y="125.164271" width="38.2238193" height="38.2238193"></rect>
+            <rect id="union-lower" fill="#FFFFFF" x="125.164271" y="201.61191" width="38.2238193" height="38.2238193"></rect>
+        </g>
+    </g>
+</svg>

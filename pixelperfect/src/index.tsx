@@ -3,7 +3,7 @@ import 'core-js/es6/array';
 
 import React from 'react';
 import ReactDOM from 'react-dom';
-import './style/index.css';
+import './style/index.less';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
 if (process.env.NODE_ENV === 'development') require('preact/debug');
