@@ -10,6 +10,8 @@
 
 # production
 /build
+# Push to Gitlab / Netlify
+/dist
 
 # misc
 .DS_Store

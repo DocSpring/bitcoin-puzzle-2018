@@ -33,6 +33,7 @@
   "scripts": {
     "start": "nodemon -w ./src/style/AntDesign/customTheme.less -w craco.config.js --exec 'craco start'",
     "build": "craco build",
+    "dist": "craco build && rm -rf dist/static/ dist/* && cp -R build/* dist/",
     "test": "craco test",
     "eject": "react-scripts eject",
     "precommit": "pretty-quick --staged"
