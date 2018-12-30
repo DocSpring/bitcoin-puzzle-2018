@@ -2332,7 +2332,7 @@ import BitcoinLogo from "./assets/bitcoin.svg";
             const summaryMsgEl = document.getElementById("summary-msg");
             summaryMsgEl.innerHTML =
               "<strong>Well done!</strong> You've found the private key " +
-              "for Stage 2.<br/> " +
+              "for Stage 3.<br/> " +
               "Here's the final stage:";
 
             const suggestion1El = document.getElementById("suggestion1");
