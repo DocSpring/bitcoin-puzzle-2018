@@ -957,11 +957,10 @@ class App extends Component {
                   <code>{this.decryptedData[0]}</code>
                   <br />
                   <br />
-                  <p>Are you ready for a real programming challenging?</p>
-                  <p>
-                    <a href={this.decryptedData[1]}>Here's Stage 2.</a>
-                  </p>
-                  <p></p>
+
+                  <h3>
+                    <a href={this.decryptedData[1]}>Click here for stage 2.</a>
+                  </h3>
                 </div>
               ) : null}
             </Modal>
