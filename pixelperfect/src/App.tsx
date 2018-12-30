@@ -89,13 +89,15 @@ const highlightHTML = (html: string) => {
 const defaultCSSForCurrentPuzzleSelector = ({
   currentPuzzleIndex,
   unlockedPuzzleIndex,
+  completed,
 }: {
   currentPuzzleIndex: number;
   unlockedPuzzleIndex: number;
+  completed: boolean;
 }) => {
   const puzzle = PUZZLES[currentPuzzleIndex];
   return currentPuzzleIndex < unlockedPuzzleIndex ||
-    unlockedPuzzleIndex == PUZZLES.length - 1
+    (completed && unlockedPuzzleIndex == PUZZLES.length - 1)
     ? puzzle.solutionCSS
     : puzzle.defaultCSS;
 };
@@ -129,10 +131,11 @@ const DEFAULT_STATE: State = {
 const log = process.env.NODE_ENV === 'development' ? console.log : () => {};
 
 const saveStateToLocalStorage = (state: State) => {
-  const { currentPuzzleIndex, unlockedPuzzleIndex } = state;
+  const { currentPuzzleIndex, unlockedPuzzleIndex, completed } = state;
   const savedState = {
     currentPuzzleIndex,
     unlockedPuzzleIndex,
+    completed,
   };
   const encryptedState = CryptoJS.AES.encrypt(
     JSON.stringify(savedState),
@@ -218,6 +221,9 @@ class App extends Component {
       loadedState.unlockedPuzzleIndex || 0
     );
 
+    if (unlockedPuzzleIndex === PUZZLES.length - 1 && loadedState.completed) {
+      this.state.completed = true;
+    }
     this.state.currentPuzzleIndex = currentPuzzleIndex;
     this.state.unlockedPuzzleIndex = unlockedPuzzleIndex;
     this.state.cssCode = defaultCSSForCurrentPuzzleSelector(this.state);
@@ -247,12 +253,14 @@ class App extends Component {
     window.addEventListener('resize', this.resizeCanvasesDebounced);
   }
 
-  componentDidUpdate(prevProps: any, prevState: State) {
-    if (this.state.completed && !this.decryptedData) {
+  componentWillUpdate(nextProps: any, nextState: State) {
+    if (nextState.completed && !this.decryptedData) {
       // Decrypt the data now.
       this.decryptedData = decryptData();
     }
+  }
 
+  componentDidUpdate(prevProps: any, prevState: State) {
     if (this.state.currentPuzzleIndex !== prevState.currentPuzzleIndex) {
       // Render changes immediately when changing the puzzle
       this.renderCSSIfUpdated(prevState);
@@ -263,7 +271,8 @@ class App extends Component {
 
     if (
       this.state.currentPuzzleIndex !== prevState.currentPuzzleIndex ||
-      this.state.unlockedPuzzleIndex !== prevState.unlockedPuzzleIndex
+      this.state.unlockedPuzzleIndex !== prevState.unlockedPuzzleIndex ||
+      this.state.completed !== prevState.completed
     ) {
       saveStateToLocalStorage(this.state);
     }
@@ -282,6 +291,7 @@ class App extends Component {
       if (unlockedPuzzleIndex > this.state.unlockedPuzzleIndex) {
         // Always show the success message when we've unlocked a new puzzle.
         // (Otherwise, don't keep showing it if the player wants to adjust the CSS.)
+        // Also don't show it at the end (we show the modal instead.)
         successVisible = true;
       }
 
@@ -290,7 +300,6 @@ class App extends Component {
       if (this.state.currentPuzzleIndex === PUZZLES.length - 1) {
         completed = true;
         completedModalVisible = true;
-        this.decryptedData = decryptData();
       }
 
       this.setState({
@@ -330,10 +339,13 @@ class App extends Component {
     const cssCode = defaultCSSForCurrentPuzzleSelector({
       currentPuzzleIndex: puzzleIndex,
       unlockedPuzzleIndex,
+      completed: this.state.completed,
     });
     this.setState({
       currentPuzzleIndex: puzzleIndex,
       cssCode,
+      diffPercentage: 0,
+      successVisible: false,
     });
   }
 
@@ -702,6 +714,7 @@ class App extends Component {
                   <Button
                     type="danger"
                     onClick={() => {
+                      localStorage.clear();
                       this.setState({
                         currentPuzzleIndex: 0,
                         unlockedPuzzleIndex: 0,
@@ -939,9 +952,9 @@ class App extends Component {
                   <code>{this.decryptedData[0]}</code>
                   <br />
                   <br />
+                  <p>Are you ready for a real programming challenging?</p>
                   <p>
-                    Now it's time for the first programming challenge.{' '}
-                    <a href={this.decryptedData[1]}>Click here for Stage 2.</a>
+                    <a href={this.decryptedData[1]}>Here is Stage 2.</a>
                   </p>
                   <p></p>
                 </div>
