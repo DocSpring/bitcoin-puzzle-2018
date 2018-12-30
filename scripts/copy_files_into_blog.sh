@@ -12,10 +12,11 @@ POST_DIR="../form_api/blog/static/posts/2018-bitcoin-programming-challenge"
 
 mkdir -p "${POST_DIR}"
 
-PP_DIR="${POST_DIR}/pixel-perfect"
-rm -rf "${PP_DIR}"
-mkdir -p "${PP_DIR}"
-cp pixelperfect/build/* "${PP_DIR}/"
+# We upload this to S3 now.
+# PP_DIR="${POST_DIR}/pixel-perfect"
+# rm -rf "${PP_DIR}"
+# mkdir -p "${PP_DIR}"
+# cp -R pixelperfect/build/* "${PP_DIR}/"
 
 # Don't delete cubes dir - we put the rendered blog post HTML in there.
 CUBES_DIR="${POST_DIR}/eab75cf16b878ce659a3c3d7b8a71cad2ea48a508f9333ef37807a3c8ff3f531"

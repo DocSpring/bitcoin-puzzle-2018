@@ -738,7 +738,9 @@ class App extends Component {
                     }
                   )}
                   onClick={() => {
-                    this.changePuzzle(puzzleIndex);
+                    if (puzzleIndex <= this.state.unlockedPuzzleIndex) {
+                      this.changePuzzle(puzzleIndex);
+                    }
                   }}
                 >
                   <div className="ant-list-item-content ant-list-item-content-single">
@@ -937,10 +939,11 @@ class App extends Component {
                   <code>{this.decryptedData[0]}</code>
                   <br />
                   <br />
-                  <p>You can find the next stage of the challenge here:</p>
                   <p>
-                    <a href={this.decryptedData[1]}>{this.decryptedData[1]}</a>
+                    Now it's time for the first programming challenge.{' '}
+                    <a href={this.decryptedData[1]}>Click here for Stage 2.</a>
                   </p>
+                  <p></p>
                 </div>
               ) : (
                 <p>Not completed yet...</p>
