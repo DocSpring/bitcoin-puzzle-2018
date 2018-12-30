@@ -20,7 +20,7 @@ Check the SHA-256 hash of the downloaded PDF:
     # => b1674191a88ec5cdd733e4240a81803105dc412d6c6708d53ab94fc248f4f553
 
 Now use this PDF file as the input to your VM program.
-For example, if you ran `./your_program stage3.exe` to produce this message,
+For example, if you ran `./your_program stage4.exe` to produce this message,
 then you should run `./your_program /tmp/bitcoin.pdf` to execute the contents
 of the Bitcoin whitepaper PDF.
 

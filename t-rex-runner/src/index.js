@@ -282,8 +282,8 @@ import BitcoinLogo from "./assets/bitcoin.svg";
       "U2FsdGVkX19wHGJ6vwqFgIcl9ok9HpH+Y1/6msMAdfs="
     ],
     KEYRIGHT: [
-      "U2FsdGVkX1/5ZsJjQi0kh9BZSUvzdcXlqKSVliTqNC3tULyztU/JDNEPEZyqpcv3lM7xxT200RmTpYwz2t/0rsARLIKjk7ox1uyVEhWzYhWUtwhXxAop5MLlN8VTIq8RcYfNX3hcsg5rX/hDXsVMnZQttJgkdIrKtVJU5lyd44Q=",
-      "U2FsdGVkX19Jrd6d9fLo1NrCEV1JNr673rakH70RDEMltSOe3zYeqxpNw1X8QorPX/0AT72pN/timzhprt+qnyNdvJNUDB4HCxsHHtk+gGHhqj5++3pp/jlChGABuOpMQA24j9W/0vWI8QEMZOu6jOzMH3jt6kyk4uFumdSCPPQ="
+      "U2FsdGVkX193TrMO+wBOd2gSk4JCucm7MLIpG+Uhs4FzmfoFCTAYY7Ya32sCW3oKL5hpafNlaOLVFuyFbqQz9nAMWBM+WCpzSFiXCtaXRuNovrnMsqFaMvRz8/3ur6w3sA2lN8sQSGLm2umKThxBmkwn/WqEg33Me7KsopH127M=",
+      "U2FsdGVkX19Iugp4TWKeolmp0aGTZGmgkN9iu0J6FJ3JR1YPOFeLZ1FzVqyARdOKIH9jB+Wj3KosnUHBkvDZo3xydm+FBUlgTQI33gwZuixBam+HiIdNVfLzWcw6fL+U+A+nnbly9BpIhdMVrHb1P9J28xIExAu3JSn2y/sFH04="
     ]
   };
 
@@ -3153,17 +3153,17 @@ import BitcoinLogo from "./assets/bitcoin.svg";
     // const basePath =
     //   "/a129db6cc02c06b7ab645a941eb9fbaf5f3349786e7b6f929ff4f29b2ea7ea2e";
     // const testsLink = '<a href="' + basePath + '/tests.bin">tests.bin</a>';
-    // const stage3Link = '<a href="' + basePath + '/stage3.exe">stage3.exe</a>';
+    // const stage4Link = '<a href="' + basePath + '/stage4.exe">stage4.exe</a>';
     // const encryptedTestsLink = CryptoJS.AES.encrypt(
     //   testsLink,
     //   Trex.updateRun()
     // ).toString();
     // console.log({ encryptedTestsLink });
-    // const encryptedStage3Link = CryptoJS.AES.encrypt(
-    //   stage3Link,
+    // const encryptedStage4Link = CryptoJS.AES.encrypt(
+    //   stage4Link,
     //   Trex.updateRun()
     // ).toString();
-    // console.log({ encryptedStage3Link });
+    // console.log({ encryptedStage4Link });
   }
 })();
 

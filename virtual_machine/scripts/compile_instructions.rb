@@ -22,7 +22,7 @@ obfuscated_instructions = StringCompiler.new(
 # Converted from hex to binary
 binary_obfuscated_instructions = obfuscated_instructions.scan(/../).map(&:hex).pack('C*')
 
-filename = '../build/stage3.exe'
+filename = '../build/stage4.exe'
 
 puts "Writing #{filename}..."
 File.open(File.expand_path(filename, __dir__), 'w') do |f|
