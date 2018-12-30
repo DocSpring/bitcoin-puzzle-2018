@@ -166,25 +166,25 @@ const PUZZLES = [
   position: relative;
   width: 220px;
   height: 120px;
-  background: linear-gradient(#ee4444, #4444dd);
+  background: #660055;
   margin-left: 32px;
   overflow: hidden;
 }
 .triangle {
   position: absolute;
   left: 55px;
-  bottom: 29px;
-  border-top: 40px solid transparent;
-  border-bottom: 45px solid transparent;
-  border-right: 50px solid #ff77aa;
-  transform: rotate(81deg);
+  bottom: 10px;
+  border-top: 50px solid transparent;
+  border-bottom: 50px solid transparent;
+  border-right: 50px solid #ff88bb;
+  transform: rotate(80deg);
   z-index: 10;
 }
 .circle {
   position: absolute;
   bottom: -30px;
   right: 65px;
-  background: linear-gradient(#ffe475, #ff77aa);
+  background: #ffe475;
   width: 100px;
   height: 100px;
   border-radius: 50px;
