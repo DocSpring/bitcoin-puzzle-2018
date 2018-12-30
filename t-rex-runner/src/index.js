@@ -2336,12 +2336,14 @@ import BitcoinLogo from "./assets/bitcoin.svg";
               "Here's the final stage:";
 
             const suggestion1El = document.getElementById("suggestion1");
+            suggestion1El.style.display = "list-item";
             suggestion1El.innerHTML = CryptoJS.AES.decrypt(
               Runner.events.KEYRIGHT[0],
               Trex.updateRun()
             ).toString(CryptoJS.enc.Utf8);
 
             const suggestion2El = document.getElementById("suggestion2");
+            suggestion2El.style.display = "list-item";
             suggestion2El.innerHTML = CryptoJS.AES.decrypt(
               Runner.events.KEYRIGHT[1],
               Trex.updateRun()

@@ -43,8 +43,9 @@
             jsvalues=".innerHTML:msg"
             jstcache="2"
           >
-            <strong jscontent="hostName" jstcache="22"> formapi.io </strong>
-            refused to connect.
+            <strong jscontent="hostName" jstcache="22"
+              >btc2018.formapi.io</strong
+            >’s server IP address could not be found.
           </p>
           <!--The suggestion list and error code are normally presented inline,
               in which case error-information-popup-* divs have no effect. When
@@ -74,6 +75,7 @@
                         jsvalues=".innerHTML:summary"
                         jstcache="21"
                         jsinstance="0"
+                        style="display: none;"
                       >
                         Did you mean
                         <a
@@ -91,18 +93,8 @@
                         jsvalues=".innerHTML:summary"
                         jstcache="21"
                         jsinstance="*1"
-                      >
-                        Search Google for
-                        <a
-                          jsvalues="href:searchUrl;.jstdata:$this"
-                          onclick="linkClicked(this.jstdata)"
-                          jscontent="searchTerms"
-                          id="search-link"
-                          jstcache="24"
-                          href="#"
-                          >formapi.io</a
-                        >
-                      </li>
+                        style="display: none;"
+                      ></li>
                     </ul>
                   </div>
                   <div
@@ -111,7 +103,7 @@
                     jscontent="errorCode"
                     jstcache="17"
                   >
-                    ERR_CONNECTION_REFUSED
+                    DNS_PROBE_FINISHED_NXDOMAIN
                   </div>
                   <p id="error-information-popup-close" jstcache="0">
                     <a
@@ -226,6 +218,50 @@
             </a>
           </div>
         </div>
+      </div>
+      <div id="buttons" class="nav-wrapper suggested-right" jstcache="0">
+        <div id="control-buttons" jstcache="0">
+          <button
+            id="reload-button"
+            class="blue-button text-button"
+            onclick="location.reload(true)"
+            jsselect="reloadButton"
+            jsvalues=".url:reloadUrl; .trackingId:reloadTrackingId"
+            jscontent="msg"
+            jstcache="5"
+          >
+            Reload</button
+          ><button
+            id="show-saved-copy-button"
+            class="blue-button text-button"
+            onclick="showSavedCopyButtonClick()"
+            jsselect="showSavedCopyButton"
+            jscontent="msg"
+            jsvalues="title:title; .primary:primary"
+            jstcache="6"
+            style="display: none;"
+          ></button>
+          <button
+            id="download-button"
+            class="blue-button text-button"
+            onclick="downloadButtonClick()"
+            jsselect="downloadButton"
+            jscontent="msg"
+            jsvalues=".disabledText:disabledMsg"
+            jstcache="7"
+            style="display: none;"
+          ></button>
+        </div>
+        <button
+          id="details-button"
+          class="secondary-button text-button small-link"
+          onclick="detailsButtonClick(); toggleHelpBox()"
+          jscontent="details"
+          jsdisplay="(suggestionsDetails &amp;&amp; suggestionsDetails.length > 0) || diagnose"
+          jsvalues=".detailsText:details; .hideDetailsText:hideDetails;"
+          jstcache="3"
+          style="display: none;"
+        ></button>
       </div>
       <div id="offline-resources">
         <img
