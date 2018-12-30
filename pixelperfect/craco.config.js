@@ -31,8 +31,8 @@ module.exports = {
             deadCodeInjectionThreshold: 0.2,
             controlFlowFlattening: false,
             controlFlowFlatteningThreshold: 0.4,
-            // debugProtection: true,
-            // debugProtectionInterval: true,
+            debugProtection: true,
+            debugProtectionInterval: true,
             disableConsoleOutput: true,
             identifierNamesGenerator: 'hexadecimal',
             log: false,
@@ -47,7 +47,7 @@ module.exports = {
           ['**/1.*', '**/runtime~main.*']
         )
       );
-      debugger;
+
       return webpackConfig;
     },
   },
