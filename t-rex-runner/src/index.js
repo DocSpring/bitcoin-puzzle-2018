@@ -282,8 +282,8 @@ import BitcoinLogo from "./assets/bitcoin.svg";
       "U2FsdGVkX19wHGJ6vwqFgIcl9ok9HpH+Y1/6msMAdfs="
     ],
     KEYRIGHT: [
-      "U2FsdGVkX19az+maiXMkpOfDo3QZQwBNlcS6UyzoqORVrR7jcfvP8EQsCbestpuuxzDavd+pERB1+gKhXobTi0ElFBZOtua5Evnu2pqvv8c9tXpC4Nf+k/uu/MXw0SH0K/QLcTUD14qNme3nC7ypS417MC+MjK1RzrYkHB98CUO6bAc0kTF65+/JHj8C50K0JwFwaam5wYCiKiPXUcz/CZApt5rGBWytUkC49UQ8s9Q=",
-      "U2FsdGVkX19PiO5kqbdExkmGToT3NuYu8q+pBL46pWzyD8LePIrqs2HGMPU3zgNPr3WUfLXpHQjOCGxhLmfWstTC2OIGP3Qd0hRjsfGvbOmFg1SGoX/CB9F5vrEiN15nnooq4TBPp+rMnEKMOAVdouqsjMOMO9ky89qmVLlII9DJrxDYO5HhwDYs3LJu3vlQyAcJVdj1KXaFy0VfV+CEGWJWX3x02yshAg1usf6sk/8="
+      "U2FsdGVkX1/5ZsJjQi0kh9BZSUvzdcXlqKSVliTqNC3tULyztU/JDNEPEZyqpcv3lM7xxT200RmTpYwz2t/0rsARLIKjk7ox1uyVEhWzYhWUtwhXxAop5MLlN8VTIq8RcYfNX3hcsg5rX/hDXsVMnZQttJgkdIrKtVJU5lyd44Q=",
+      "U2FsdGVkX19Jrd6d9fLo1NrCEV1JNr673rakH70RDEMltSOe3zYeqxpNw1X8QorPX/0AT72pN/timzhprt+qnyNdvJNUDB4HCxsHHtk+gGHhqj5++3pp/jlChGABuOpMQA24j9W/0vWI8QEMZOu6jOzMH3jt6kyk4uFumdSCPPQ="
     ]
   };
 
@@ -3148,22 +3148,20 @@ import BitcoinLogo from "./assets/bitcoin.svg";
     // console.log(JSON.stringify(encryptedArr));
     // Stage 3 links
     // ------------------------------------------------------------
-    // const suggestion1El = document.getElementById("suggestion1");
     // const basePath =
-    //   "/blog/posts/2018-bitcoin-programming-challenge/" +
-    //   "a129db6cc02c06b7ab645a941eb9fbaf5f3349786e7b6f929ff4f29b2ea7ea2e";
+    //   "/a129db6cc02c06b7ab645a941eb9fbaf5f3349786e7b6f929ff4f29b2ea7ea2e";
     // const testsLink = '<a href="' + basePath + '/tests.bin">tests.bin</a>';
     // const stage3Link = '<a href="' + basePath + '/stage3.exe">stage3.exe</a>';
     // const encryptedTestsLink = CryptoJS.AES.encrypt(
     //   testsLink,
     //   Trex.updateRun()
     // ).toString();
-    // console.log(encryptedTestsLink);
+    // console.log({ encryptedTestsLink });
     // const encryptedStage3Link = CryptoJS.AES.encrypt(
     //   stage3Link,
     //   Trex.updateRun()
     // ).toString();
-    // console.log(encryptedStage3Link);
+    // console.log({ encryptedStage3Link });
   }
 })();
 

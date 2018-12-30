@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <title>FormAPI Blog - 2018 Bitcoin Programming Challenge: Cubes</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="FormAPI Engineering Blog" />
+    <meta name="author" content="" />
+
+    <meta name="generator" content="Hugo 0.50-DEV" />
+
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/normalize/7.0.0/normalize.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
+    />
+    <link
+      href="https://fonts.googleapis.com/css?family=Roboto|Lato"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="https://formapi.io/blog/css/styles.css"
+    />
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="https://formapi.io/blog/css/syntax.css"
+    />
+  </head>
+
+  <body>
+    <div id="container">
+      <main>
+        <article>
+          <h2 id="cubes">Cubes</h2>
+
+          <blockquote>
+            <p>
+              <em
+                >This challenge was inspired by the
+                <a href="https://en.wikipedia.org/wiki/3%25">3%</a> television
+                series.</em
+              >
+            </p>
+          </blockquote>
+
+          <p>
+            You are given a set of 3-dimensional blocks with different shapes.
+            You must find the correct orientation and position for each block so
+            that they form an 8x8x8 cube. Blocks cannot overlap with other
+            blocks, and there must be no empty cells in the 8x8x8 grid.
+          </p>
+
+          <ul>
+            <li>
+              <a
+                href="/eab75cf16b878ce659a3c3d7b8a71cad2ea48a508f9333ef37807a3c8ff3f531/blocks.json"
+                >Download <code>blocks.json</code></a
+              >
+            </li>
+          </ul>
+
+          <p>
+            <strong
+              >The first block in the array has the correct orientation, and
+              must be placed at <code>0, 0, 0</code>.</strong
+            >
+            The rest of the blocks have been shuffled and randomly rotated
+            around the X, Y, and Z axis. Rotations are a multiple of 90 degrees.
+            Any empty space around the blocks has been trimmed.
+          </p>
+
+          <p>Here&rsquo;s how the blocks are encoded:</p>
+
+          <ul>
+            <li>The outermost array contains the list of blocks.</li>
+            <li>
+              Each block is a nested array with 3 levels:
+
+              <ul>
+                <li>
+                  The first level is an array of &ldquo;planes&rdquo; along the
+                  Z axis (depth).
+                </li>
+                <li>
+                  The second level is an array of &ldquo;rows&rdquo; along the Y
+                  axis (height).
+                </li>
+                <li>
+                  The third level is an array of &ldquo;cells&rdquo; along the X
+                  axis (width).
+                </li>
+              </ul>
+            </li>
+          </ul>
+
+          <p>Example:</p>
+          <div class="highlight">
+            <pre
+              class="chroma"
+            ><code class="language-js" data-lang="js"><span class="c1">// Get the second block
+</span><span class="c1"></span><span class="k">const</span> <span class="nx">block</span> <span class="o">=</span> <span class="nx">blocks</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+
+<span class="c1">// Get the value at {x: 2, y: 3, z: 4}
+</span><span class="c1"></span><span class="k">const</span> <span class="nx">value</span> <span class="o">=</span> <span class="nx">block</span><span class="p">[</span><span class="mi">4</span><span class="p">][</span><span class="mi">3</span><span class="p">][</span><span class="mi">2</span><span class="p">]</span>
+</code></pre>
+          </div>
+          <p>Each &ldquo;cell&rdquo; contains one of three values:</p>
+
+          <ul>
+            <li><code>-1</code>: This is an empty cell.</li>
+            <li>
+              <code>0</code>: This cell encodes a single bit with a value of
+              <code>0</code>.
+            </li>
+            <li>
+              <code>1</code>: This cell encodes a single bit with a value of
+              <code>1</code>.
+            </li>
+          </ul>
+
+          <p>
+            Empty cells (<code>-1</code>) can overlap with the empty cells of
+            other blocks. <code>0</code> and <code>1</code> values must never
+            overlap with other blocks.
+          </p>
+
+          <p><br /></p>
+
+          <p>
+            Here&rsquo;s a <code>2x1x1</code> block (<code
+              >width: 2, height: 1, depth: 1</code
+            >):
+          </p>
+          <div class="highlight">
+            <pre
+              class="chroma"
+            ><code class="language-js" data-lang="js"><span class="p">[[[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]]]</span>
+</code></pre>
+          </div>
+          <p>
+            <img
+              src="/eab75cf16b878ce659a3c3d7b8a71cad2ea48a508f9333ef37807a3c8ff3f531/images/puzzle-piece-2x1x1.jpg"
+              alt="2x1x1 Block"
+              style="box-shadow: none; max-width: 400px;"
+            />
+          </p>
+
+          <p>
+            <em
+              >In these visualizations, the lighter color represents a
+              <code>1</code> bit, and the darker color represents a
+              <code>0</code> bit.</em
+            >
+          </p>
+
+          <p>
+            Here&rsquo;s a <code>1x2x2</code> block (<code
+              >width: 1, height: 2, depth: 2</code
+            >):
+          </p>
+          <div class="highlight">
+            <pre
+              class="chroma"
+            ><code class="language-js" data-lang="js"><span class="p">[[[</span><span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">]],</span> <span class="p">[[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">]]]</span>
+</code></pre>
+          </div>
+          <p>
+            <img
+              src="/eab75cf16b878ce659a3c3d7b8a71cad2ea48a508f9333ef37807a3c8ff3f531/images/puzzle-piece-1x2x2.jpg"
+              alt="1x2x2 Block"
+              style="box-shadow: none; max-width: 400px;"
+            />
+          </p>
+
+          <p>
+            Blocks can be rotated <code>0°</code>, <code>90°</code>,
+            <code>180°</code>, or <code>270°</code> around the <code>X</code>,
+            <code>Y</code> and <code>Z</code> axes:
+          </p>
+
+          <video width="100%" autoplay muted loop style="max-width: 400px;">
+            <source
+              src="/eab75cf16b878ce659a3c3d7b8a71cad2ea48a508f9333ef37807a3c8ff3f531/videos/cube-solver-rotation.mp4"
+              type="video/mp4"
+            />
+          </video>
+
+          <p>Here&rsquo;s a <code>4x7x8</code> block that has been rotated:</p>
+
+          <p>
+            <img
+              src="/eab75cf16b878ce659a3c3d7b8a71cad2ea48a508f9333ef37807a3c8ff3f531/images/puzzle-piece-rotation.jpg"
+              alt="Rotated block"
+              style="box-shadow: none; max-width: 400px;"
+            />
+          </p>
+
+          <p>This is the block&rsquo;s original orientation and position:</p>
+
+          <p>
+            <img
+              src="/eab75cf16b878ce659a3c3d7b8a71cad2ea48a508f9333ef37807a3c8ff3f531/images/puzzle-piece-correct.jpg"
+              alt="Block with correct orientation"
+              style="box-shadow: none; max-width: 400px;"
+            />
+          </p>
+
+          <p>
+            Here&rsquo;s all of the other blocks that form this
+            <code>8x8x8</code> cube:
+          </p>
+
+          <video width="100%" autoplay muted loop style="max-width: 400px;">
+            <source
+              src="/eab75cf16b878ce659a3c3d7b8a71cad2ea48a508f9333ef37807a3c8ff3f531/videos/cube-solver-pieces.mp4"
+              type="video/mp4"
+            />
+          </video>
+
+          <p><br /></p>
+
+          <p>
+            Once you&rsquo;ve solved the cube, concatenate all the bits from
+            <code>0, 0, 0</code> to <code>7, 7, 7</code> in this order:
+            <code>x, y, z</code>
+          </p>
+
+          <pre><code>x: 0, y: 0, z: 0
+x: 1, y: 0, z: 0
+x: 2, y: 0, z: 0
+...
+x: 6, y: 0, z: 0
+x: 7, y: 0, z: 0
+x: 0, y: 1, z: 0
+x: 1, y: 1, z: 0
+...
+x: 6, y: 7, z: 0
+x: 7, y: 7, z: 0
+x: 0, y: 0, z: 1
+x: 1, y: 0, z: 1
+...
+x: 5, y: 7, z: 7
+x: 6, y: 7, z: 7
+x: 7, y: 7, z: 7
+</code></pre>
+
+          <p>
+            The result will be 512 bits. Split this into two 256-bit values (the
+            first 256 bits, and the last 256 bits). <code>XOR</code> these
+            256-bit values together to produce a single 256-bit value. This is
+            the private key for a Bitcoin address that contains
+            <strong>0.005 BTC</strong>.
+          </p>
+
+          <p>
+            First, encode the 256-bit value as a 64-character hex string. Then
+            you will need to convert this hex string to the wallet import format
+            (WIF). This allows you to import the private key into a Bitcoin
+            wallet.
+          </p>
+
+          <p>
+            You can use the
+            <a href="https://github.com/libbitcoin/libbitcoin-explorer"
+              >bitcoin-explorer</a
+            >
+            command-line tool:
+          </p>
+          <div class="highlight">
+            <pre
+              class="chroma"
+            ><code class="language-bash" data-lang="bash">$ <span class="nb">echo</span> &lt;hex-encoded-private-key&gt; <span class="p">|</span> bx base58check-encode -v <span class="m">128</span></code></pre>
+          </div>
+          <p>
+            Or you can use
+            <a
+              href="https://gist.github.com/ndbroadbent/522c374d18e6a5d592465ff83d49efe0"
+              >this Ruby script</a
+            >:
+          </p>
+          <div class="highlight">
+            <pre
+              class="chroma"
+            ><code class="language-bash" data-lang="bash">$ private_key_to_wif.rb &lt;hex-encoded-private-key&gt;</code></pre>
+          </div>
+          <p>
+            Now you can import the private key and transfer the 0.005 BTC to
+            your own address.
+          </p>
+
+          <p><br /></p>
+
+          <hr />
+
+          <h2 id="stage-3">Stage 3</h2>
+
+          <p>
+            Now that you&rsquo;ve solved the cube, you can proceed to the third
+            stage by visiting this URL:
+          </p>
+
+          <pre><code>https://btc2018.formapi.io/&lt;hex-encoded-private-key&gt;</code></pre>
+
+          <p>
+            <em
+              >(Replace <code>&lt;hex-encoded-private-key&gt;</code> with the
+              256-bit hex-encoded string.)</em
+            >
+          </p>
+        </article>
+      </main>
+      <footer>
+        <h6>
+          <span>
+            Copyright &copy; 2018 <a href="https://formapi.io">FormAPI</a>
+          </span>
+        </h6>
+      </footer>
+    </div>
+
+    <script type="text/javascript">
+      (function(i, s, o, g, r, a, m) {
+        i["GoogleAnalyticsObject"] = r;
+        (i[r] =
+          i[r] ||
+          function() {
+            (i[r].q = i[r].q || []).push(arguments);
+          }),
+          (i[r].l = 1 * new Date());
+        (a = s.createElement(o)), (m = s.getElementsByTagName(o)[0]);
+        a.async = 1;
+        a.src = g;
+        m.parentNode.insertBefore(a, m);
+      })(
+        window,
+        document,
+        "script",
+        "https://www.google-analytics.com/analytics.js",
+        "ga"
+      );
+      ga("create", "UA-19054098-19", "auto");
+      ga("send", "pageview");
+    </script>
+  </body>
+</html>

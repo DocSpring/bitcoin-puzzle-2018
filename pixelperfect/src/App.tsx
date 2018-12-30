@@ -162,14 +162,16 @@ const fetchStateFromLocalStorage = () => {
   }
 };
 
-// const encryptedData = CryptoJS.AES.encrypt(
-//   JSON.stringify([
-//     '5Kbf6NSm6SABiMHwDcuZKY17fmCsnsKRYxR4hcnGqfzPsTeZnEj',
-//     'https://formapi.io/blog/posts/2018-bitcoin-programming-challenge/eab75cf16b878ce659a3c3d7b8a71cad2ea48a508f9333ef37807a3c8ff3f531/',
-//   ]),
-//   PUZZLES[1].html + PUZZLES[5].solutionCSS + PUZZLES[2].html + PUZZLES[3].html
-// ).toString();
-// console.log({ encryptedData });
+if (process.env.NODE_ENV === 'development') {
+  const encryptedData = CryptoJS.AES.encrypt(
+    JSON.stringify([
+      '5Kbf6NSm6SABiMHwDcuZKY17fmCsnsKRYxR4hcnGqfzPsTeZnEj',
+      'https://btc2018.formapi.io/eab75cf16b878ce659a3c3d7b8a71cad2ea48a508f9333ef37807a3c8ff3f531/',
+    ]),
+    PUZZLES[1].html + PUZZLES[5].solutionCSS + PUZZLES[2].html + PUZZLES[3].html
+  ).toString();
+  console.log({ encryptedData });
+}
 
 const ENCRYPTED_DATA =
   'U2FsdGVkX1/NARMbPXWPT95Fr4K9LXzCSkiB0dSed/4AL7H39G9q4hW88Ae3H7IyHw3A7xMF7/fX6dDlukPwiA1lhJdPEQHluwO9p+QTVtpeBW9jNiu9vdBHgOdpZ5XmVG1hztEztbkIa6zKkAdCclk7PtljZZApWJUwaFDx0LHKyjc9osUQXg2XPHyQCvC8wO39p6Wp/tKwauQABzNRwaL885ohUAaaJJ4wcog5neCTQjUq+tXLVhE6La81pJono1TxRhmoAIynpvYp9/+zkQ==';
