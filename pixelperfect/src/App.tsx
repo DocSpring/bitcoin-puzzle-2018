@@ -298,8 +298,9 @@ class App extends Component {
       // Check if the whole puzzle is finished.
       let { completed, completedModalVisible } = this.state;
       if (this.state.currentPuzzleIndex === PUZZLES.length - 1) {
+        // Show the completed modal only when completed changes to true
+        if (!completed) completedModalVisible = true;
         completed = true;
-        completedModalVisible = true;
       }
 
       this.setState({

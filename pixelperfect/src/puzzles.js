@@ -184,7 +184,7 @@ const PUZZLES = [
   position: absolute;
   bottom: -30px;
   right: 65px;
-  background: linear-gradient(#ffe475, #cc33cc);
+  background: linear-gradient(#ffe475, #ff77aa);
   width: 100px;
   height: 100px;
   border-radius: 50px;
