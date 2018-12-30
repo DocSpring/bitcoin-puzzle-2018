@@ -166,7 +166,7 @@ const PUZZLES = [
   position: relative;
   width: 220px;
   height: 120px;
-  background: linear-gradient(#ee4444, #4444ee);
+  background: linear-gradient(#ee4444, #4444dd);
   margin-left: 32px;
   overflow: hidden;
 }
@@ -189,7 +189,6 @@ const PUZZLES = [
   height: 100px;
   border-radius: 50px;
   z-index: 0;
-  box-shadow: 5px 10px #ffffff;
 }`,
     defaultCSS: `\
 .container {
