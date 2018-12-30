@@ -44,10 +44,6 @@ import './style/AntDesign/index.less';
 import './style/app.less';
 import './style/prism.less';
 
-import PUZZLES from './puzzles';
-
-const PUZZLE_LIST: string[] = PUZZLES.map((_, i) => `Puzzle ${i}`);
-
 // Not sure why this library is so verbose :/
 const highlightHTML = (html: string) => {
   return (
@@ -87,23 +83,25 @@ const highlightHTML = (html: string) => {
 // Show the default CSS for an unsolved puzzle.
 // Show the solution if it has already been solved.
 const defaultCSSForCurrentPuzzleSelector = ({
+  puzzles,
   currentPuzzleIndex,
   unlockedPuzzleIndex,
   completed,
 }: {
+  puzzles: PuzzleType[];
   currentPuzzleIndex: number;
   unlockedPuzzleIndex: number;
   completed: boolean;
 }) => {
-  const puzzle = PUZZLES[currentPuzzleIndex];
+  const puzzle = puzzles[currentPuzzleIndex];
   return currentPuzzleIndex < unlockedPuzzleIndex ||
-    (completed && unlockedPuzzleIndex == PUZZLES.length - 1)
+    (completed && unlockedPuzzleIndex == puzzles.length - 1)
     ? puzzle.solutionCSS
     : puzzle.defaultCSS;
 };
 
-const solutionCSSSelector = (state: State) =>
-  PUZZLES[state.currentPuzzleIndex].solutionCSS;
+const solutionCSSSelector = (props: Props, state: State) =>
+  props.puzzles[state.currentPuzzleIndex].solutionCSS;
 
 type State = {
   currentPuzzleIndex: number;
@@ -127,31 +125,44 @@ const DEFAULT_STATE: State = {
   completedModalVisible: false,
 };
 
+type PuzzleType = {
+  name: string;
+  html: string;
+  solutionCSS: string;
+  defaultCSS: string;
+};
+
+type Props = {
+  puzzles: PuzzleType[];
+};
+
 // const DEBUG = process.env.NODE_ENV === 'development';
 const log = process.env.NODE_ENV === 'development' ? console.log : () => {};
 
-const saveStateToLocalStorage = (state: State) => {
+const saveStateToLocalStorage = (props: Props, state: State) => {
   const { currentPuzzleIndex, unlockedPuzzleIndex, completed } = state;
   const savedState = {
     currentPuzzleIndex,
     unlockedPuzzleIndex,
     completed,
   };
+  const { puzzles } = props;
   const encryptedState = CryptoJS.AES.encrypt(
     JSON.stringify(savedState),
-    PUZZLES[4].html + PUZZLES[2].solutionCSS + PUZZLES[0].html
+    puzzles[4].html + puzzles[2].solutionCSS + puzzles[0].html
   ).toString();
   // Update the saved state in localStorage
   localStorage.setItem('state', encryptedState);
 };
 
-const fetchStateFromLocalStorage = () => {
+const fetchStateFromLocalStorage = (props: Props) => {
   const encryptedState = localStorage.getItem('state');
   if (!encryptedState) return {};
+  const { puzzles } = props;
   try {
     const stateJSON = CryptoJS.AES.decrypt(
       encryptedState,
-      PUZZLES[4].html + PUZZLES[2].solutionCSS + PUZZLES[0].html
+      puzzles[4].html + puzzles[2].solutionCSS + puzzles[0].html
     ).toString(CryptoJS.enc.Utf8);
     const state = JSON.parse(stateJSON);
     log('Decrypted state from local storage', state);
@@ -162,34 +173,28 @@ const fetchStateFromLocalStorage = () => {
   }
 };
 
-if (process.env.NODE_ENV === 'development') {
-  // const encryptedData = CryptoJS.AES.encrypt(
-  //   JSON.stringify([
-  //     '5Kbf6NSm6SABiMHwDcuZKY17fmCsnsKRYxR4hcnGqfzPsTeZnEj',
-  //     'https://btc2018.formapi.io/eab75cf16b878ce659a3c3d7b8a71cad2ea48a508f9333ef37807a3c8ff3f531/',
-  //   ]),
-  //   PUZZLES[1].html + PUZZLES[5].solutionCSS + PUZZLES[2].html + PUZZLES[3].html
-  // ).toString();
-  // console.log({ encryptedData });
-}
-
 const ENCRYPTED_DATA =
   'U2FsdGVkX19sJxOMWEba50VyIDLnUV9yLfek9sT8RdUByPBJq3GJsAffP/KiU83P3X2LzOKaSfVpY+XaQ6rCZVDMZcNL9V8Y54T9RE5DKz1N4sLNb6cS80ttuWWogrD8HWMwLDus20uixjdcOl0+nzp/8p9PkSjYfsH3OASPpw24zdogBcDxRHBNqMFvmYm3QmYJRVpC2hwggSGCpZw2JRV8mVhWoirMWAFrQtkw0wQ=';
 
 // Important - Don't decrypt this until the puzzle is solved,
 // so that it is never loaded into memory until required.
-const decryptData = (): string[] =>
+const decryptData = (puzzles: PuzzleType[]): string[] =>
   JSON.parse(
     CryptoJS.AES.decrypt(
       ENCRYPTED_DATA,
-      PUZZLES[1].html +
-        PUZZLES[5].solutionCSS +
-        PUZZLES[2].html +
-        PUZZLES[3].html
+      puzzles[1].html +
+        puzzles[5].solutionCSS +
+        puzzles[2].html +
+        puzzles[3].html
     ).toString(CryptoJS.enc.Utf8)
   );
 
-class App extends Component {
+const puzzleListSelector = createSelector(
+  (props: Props) => props.puzzles,
+  puzzles => puzzles.map((_, i) => `Puzzle ${i}`)
+);
+
+class App extends Component<Props, State> {
   targetCanvas: HTMLCanvasElement | null = null;
   resultCanvas: HTMLCanvasElement | null = null;
   diffCanvas: HTMLCanvasElement | null = null;
@@ -207,28 +212,37 @@ class App extends Component {
 
   state = DEFAULT_STATE;
 
-  constructor(props: any) {
+  constructor(props: Props) {
     super(props);
 
     // Load the puzzle indexes from localStorage
     // Whoops, can't let the user modify these so easily.
 
-    const loadedState = fetchStateFromLocalStorage();
+    const loadedState = fetchStateFromLocalStorage(props);
     const currentPuzzleIndex = Math.min(
-      PUZZLES.length - 1,
+      props.puzzles.length - 1,
       loadedState.currentPuzzleIndex || 0
     );
     const unlockedPuzzleIndex = Math.min(
-      PUZZLES.length - 1,
+      props.puzzles.length - 1,
       loadedState.unlockedPuzzleIndex || 0
     );
 
-    if (unlockedPuzzleIndex === PUZZLES.length - 1 && loadedState.completed) {
+    if (
+      unlockedPuzzleIndex === props.puzzles.length - 1 &&
+      loadedState.completed
+    ) {
       this.state.completed = true;
     }
     this.state.currentPuzzleIndex = currentPuzzleIndex;
     this.state.unlockedPuzzleIndex = unlockedPuzzleIndex;
-    this.state.cssCode = defaultCSSForCurrentPuzzleSelector(this.state);
+
+    this.state.cssCode = defaultCSSForCurrentPuzzleSelector({
+      puzzles: props.puzzles,
+      currentPuzzleIndex,
+      unlockedPuzzleIndex,
+      completed: this.state.completed,
+    });
 
     this.diffPixelsFormattedSelector = createSelector(
       (state: State) => state.diffPixels,
@@ -244,9 +258,9 @@ class App extends Component {
   }
 
   componentDidMount() {
-    this.renderCSSToTargetCanvas(solutionCSSSelector(this.state)).then(() =>
-      this.renderCSSToResultCanvas(this.state.cssCode)
-    );
+    this.renderCSSToTargetCanvas(
+      solutionCSSSelector(this.props, this.state)
+    ).then(() => this.renderCSSToResultCanvas(this.state.cssCode));
 
     // Takes a while for the containers to be positioned
     window.setTimeout(() => {
@@ -258,7 +272,7 @@ class App extends Component {
   componentWillUpdate(nextProps: any, nextState: State) {
     if (nextState.completed && !this.decryptedData) {
       // Decrypt the data now.
-      this.decryptedData = decryptData();
+      this.decryptedData = decryptData(this.props.puzzles);
     }
   }
 
@@ -276,14 +290,14 @@ class App extends Component {
       this.state.unlockedPuzzleIndex !== prevState.unlockedPuzzleIndex ||
       this.state.completed !== prevState.completed
     ) {
-      saveStateToLocalStorage(this.state);
+      saveStateToLocalStorage(this.props, this.state);
     }
 
     if (this.state.diffPercentage === 100 && prevState.diffPercentage !== 100) {
       // The current puzzle was just solved.
       // Unlock the next puzzle (if not already unlocked.)
       const unlockedPuzzleIndex = Math.min(
-        PUZZLES.length - 1,
+        this.props.puzzles.length - 1,
         Math.max(
           this.state.currentPuzzleIndex + 1,
           this.state.unlockedPuzzleIndex
@@ -299,7 +313,7 @@ class App extends Component {
 
       // Check if the whole puzzle is finished.
       let { completed, completedModalVisible } = this.state;
-      if (this.state.currentPuzzleIndex === PUZZLES.length - 1) {
+      if (this.state.currentPuzzleIndex === this.props.puzzles.length - 1) {
         // Show the completed modal only when completed changes to true
         if (!completed) completedModalVisible = true;
         completed = true;
@@ -343,6 +357,7 @@ class App extends Component {
     }
     // Always update the current CSS when changing the puzzle.
     const cssCode = defaultCSSForCurrentPuzzleSelector({
+      puzzles: this.props.puzzles,
       currentPuzzleIndex: puzzleIndex,
       unlockedPuzzleIndex,
       completed: this.state.completed,
@@ -416,7 +431,9 @@ class App extends Component {
     let promise = Promise.resolve();
     if (puzzleChanged) {
       promise = promise.then(() =>
-        this.renderCSSToTargetCanvas(solutionCSSSelector(this.state))
+        this.renderCSSToTargetCanvas(
+          solutionCSSSelector(this.props, this.state)
+        )
       );
     }
 
@@ -470,7 +487,7 @@ class App extends Component {
         reject();
         return;
       }
-      const puzzleHTML = PUZZLES[this.state.currentPuzzleIndex].html;
+      const puzzleHTML = this.props.puzzles[this.state.currentPuzzleIndex].html;
       const renderHTML = `<html>
   <head>
     <style>html, body { margin: 0; padding: 0; }</style>
@@ -657,8 +674,9 @@ class App extends Component {
   }
 
   highlightedHTMLSelector = createSelector(
-    (state: State) => state.currentPuzzleIndex,
-    puzzleIndex => highlightHTML(PUZZLES[puzzleIndex].html)
+    (props: Props) => props.puzzles,
+    (_: Props, state: State) => state.currentPuzzleIndex,
+    (puzzles, puzzleIndex) => highlightHTML(puzzles[puzzleIndex].html)
   );
 
   render() {
@@ -706,11 +724,12 @@ class App extends Component {
                   <Button
                     type="primary"
                     onClick={() => {
-                      const lastPuzzleIndex = PUZZLES.length - 1;
+                      const lastPuzzleIndex = this.props.puzzles.length - 1;
                       this.setState({
                         currentPuzzleIndex: lastPuzzleIndex,
                         unlockedPuzzleIndex: lastPuzzleIndex,
-                        cssCode: PUZZLES[lastPuzzleIndex].solutionCSS,
+                        cssCode: this.props.puzzles[lastPuzzleIndex]
+                          .solutionCSS,
                         completed: true,
                       });
                     }}
@@ -726,7 +745,7 @@ class App extends Component {
                         currentPuzzleIndex: 0,
                         unlockedPuzzleIndex: 0,
                         completed: false,
-                        cssCode: PUZZLES[0].defaultCSS,
+                        cssCode: this.props.puzzles[0].defaultCSS,
                         successVisible: false,
                         completedModalVisible: false,
                       });
@@ -743,7 +762,7 @@ class App extends Component {
             size="small"
             className="no-outside-border"
             bordered
-            dataSource={PUZZLE_LIST}
+            dataSource={puzzleListSelector(this.props)}
             renderItem={(item: string, puzzleIndex: number) => {
               return (
                 <div
@@ -791,7 +810,7 @@ class App extends Component {
                   style={{ ...cardStyle, flex: 1 }}
                 >
                   <div className="static-code-wrapper overflow-wrapper">
-                    {this.highlightedHTMLSelector(this.state)}
+                    {this.highlightedHTMLSelector(this.props, this.state)}
                   </div>
                 </Card>
 
@@ -803,8 +822,9 @@ class App extends Component {
                       size="small"
                       onClick={() => {
                         this.setState({
-                          cssCode:
-                            PUZZLES[this.state.currentPuzzleIndex].defaultCSS,
+                          cssCode: this.props.puzzles[
+                            this.state.currentPuzzleIndex
+                          ].defaultCSS,
                         });
                       }}
                     >
@@ -840,7 +860,7 @@ class App extends Component {
                                 {this.state.currentPuzzleIndex}!
                               </p>
                               {this.state.currentPuzzleIndex <
-                                PUZZLES.length - 1 && (
+                                this.props.puzzles.length - 1 && (
                                 <Button
                                   type="primary"
                                   size="small"

@@ -202,4 +202,4 @@ const PUZZLES = [
   },
 ];
 
-export default PUZZLES;
+module.exports = PUZZLES;

@@ -22,7 +22,10 @@ if (process.env.NODE_ENV === 'production') {
   disableReactDevTools();
 }
 
-ReactDOM.render(<App />, document.getElementById('root'));
+import decryptPuzzles from './puzzles.enc';
+const PUZZLES = decryptPuzzles();
+
+ReactDOM.render(<App puzzles={PUZZLES} />, document.getElementById('root'));
 
 // If you want your app to work offline and load faster, you can change
 // unregister() to register() below. Note this comes with some pitfalls.
