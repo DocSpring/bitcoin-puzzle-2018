@@ -166,7 +166,7 @@ const PUZZLES = [
   position: relative;
   width: 220px;
   height: 120px;
-  background: #660055;
+  background: #660077;
   margin-left: 32px;
   overflow: hidden;
 }
