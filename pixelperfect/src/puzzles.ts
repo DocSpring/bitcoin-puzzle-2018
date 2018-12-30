@@ -1,3 +1,5 @@
+import CryptoJS from 'crypto-js';
+
 // Color pallette:
 const RED = '#d11141';
 const GREEN = '#00b159';
@@ -203,4 +205,14 @@ const PUZZLES = [
   },
 ];
 
-export default PUZZLES;
+const k1 = 'ddc8312a4af4eb8652620c3315236';
+const k2 = '6bab3de8ffa36d9a08';
+const k3 = 'c1a330b5ee77929f0';
+const encryptedPuzzles = CryptoJS.AES.encrypt(
+  JSON.stringify(PUZZLES),
+  k1 + k2 + k3 + '4eb'
+).toString();
+console.log('Encrypted Puzzles:');
+console.log(encryptedPuzzles);
+
+export default () => PUZZLES;

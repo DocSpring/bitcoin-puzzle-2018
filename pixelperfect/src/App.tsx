@@ -44,9 +44,15 @@ import './style/AntDesign/index.less';
 import './style/app.less';
 import './style/prism.less';
 
-import PUZZLES from './puzzles';
+import decryptPuzzles from './puzzles';
+// import decryptPuzzles from './puzzles.enc';
 
-const PUZZLE_LIST: string[] = PUZZLES.map((_, i) => `Puzzle ${i}`);
+var PUZZLES: {
+  name: string;
+  html: string;
+  solutionCSS: string;
+  defaultCSS: string;
+}[] = [];
 
 // Not sure why this library is so verbose :/
 const highlightHTML = (html: string) => {
@@ -207,8 +213,13 @@ class App extends Component {
 
   state = DEFAULT_STATE;
 
+  PUZZLE_LIST: string[] = [];
+
   constructor(props: any) {
     super(props);
+
+    PUZZLES = decryptPuzzles();
+    this.PUZZLE_LIST = PUZZLES.map((_, i) => `Puzzle ${i}`);
 
     // Load the puzzle indexes from localStorage
     // Whoops, can't let the user modify these so easily.
@@ -743,7 +754,7 @@ class App extends Component {
             size="small"
             className="no-outside-border"
             bordered
-            dataSource={PUZZLE_LIST}
+            dataSource={this.PUZZLE_LIST}
             renderItem={(item: string, puzzleIndex: number) => {
               return (
                 <div
