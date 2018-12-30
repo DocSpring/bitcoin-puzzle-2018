@@ -946,7 +946,7 @@ class App extends Component {
               {this.state.completed && this.decryptedData ? (
                 <div>
                   <p>
-                    Here's the first private key. This address contains{' '}
+                    Here's the first private key for an address that contains{' '}
                     <strong>0.005 BTC</strong>:
                   </p>
                   <code>{this.decryptedData[0]}</code>
@@ -954,13 +954,11 @@ class App extends Component {
                   <br />
                   <p>Are you ready for a real programming challenging?</p>
                   <p>
-                    <a href={this.decryptedData[1]}>Here is Stage 2.</a>
+                    <a href={this.decryptedData[1]}>Here's Stage 2.</a>
                   </p>
                   <p></p>
                 </div>
-              ) : (
-                <p>Not completed yet...</p>
-              )}
+              ) : null}
             </Modal>
           </Content>
         </Layout>
