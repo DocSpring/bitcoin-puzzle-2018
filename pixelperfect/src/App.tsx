@@ -163,18 +163,18 @@ const fetchStateFromLocalStorage = () => {
 };
 
 if (process.env.NODE_ENV === 'development') {
-  const encryptedData = CryptoJS.AES.encrypt(
-    JSON.stringify([
-      '5Kbf6NSm6SABiMHwDcuZKY17fmCsnsKRYxR4hcnGqfzPsTeZnEj',
-      'https://btc2018.formapi.io/eab75cf16b878ce659a3c3d7b8a71cad2ea48a508f9333ef37807a3c8ff3f531/',
-    ]),
-    PUZZLES[1].html + PUZZLES[5].solutionCSS + PUZZLES[2].html + PUZZLES[3].html
-  ).toString();
-  console.log({ encryptedData });
+  // const encryptedData = CryptoJS.AES.encrypt(
+  //   JSON.stringify([
+  //     '5Kbf6NSm6SABiMHwDcuZKY17fmCsnsKRYxR4hcnGqfzPsTeZnEj',
+  //     'https://btc2018.formapi.io/eab75cf16b878ce659a3c3d7b8a71cad2ea48a508f9333ef37807a3c8ff3f531/',
+  //   ]),
+  //   PUZZLES[1].html + PUZZLES[5].solutionCSS + PUZZLES[2].html + PUZZLES[3].html
+  // ).toString();
+  // console.log({ encryptedData });
 }
 
 const ENCRYPTED_DATA =
-  'U2FsdGVkX1/NARMbPXWPT95Fr4K9LXzCSkiB0dSed/4AL7H39G9q4hW88Ae3H7IyHw3A7xMF7/fX6dDlukPwiA1lhJdPEQHluwO9p+QTVtpeBW9jNiu9vdBHgOdpZ5XmVG1hztEztbkIa6zKkAdCclk7PtljZZApWJUwaFDx0LHKyjc9osUQXg2XPHyQCvC8wO39p6Wp/tKwauQABzNRwaL885ohUAaaJJ4wcog5neCTQjUq+tXLVhE6La81pJono1TxRhmoAIynpvYp9/+zkQ==';
+  'U2FsdGVkX19sJxOMWEba50VyIDLnUV9yLfek9sT8RdUByPBJq3GJsAffP/KiU83P3X2LzOKaSfVpY+XaQ6rCZVDMZcNL9V8Y54T9RE5DKz1N4sLNb6cS80ttuWWogrD8HWMwLDus20uixjdcOl0+nzp/8p9PkSjYfsH3OASPpw24zdogBcDxRHBNqMFvmYm3QmYJRVpC2hwggSGCpZw2JRV8mVhWoirMWAFrQtkw0wQ=';
 
 // Important - Don't decrypt this until the puzzle is solved,
 // so that it is never loaded into memory until required.
