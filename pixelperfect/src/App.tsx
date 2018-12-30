@@ -159,22 +159,30 @@ const fetchStateFromLocalStorage = () => {
   }
 };
 
-// const encryptedWIFKey = CryptoJS.AES.encrypt(
-//   '5Kbf6NSm6SABiMHwDcuZKY17fmCsnsKRYxR4hcnGqfzPsTeZnEj',
+// const encryptedData = CryptoJS.AES.encrypt(
+//   JSON.stringify([
+//     '5Kbf6NSm6SABiMHwDcuZKY17fmCsnsKRYxR4hcnGqfzPsTeZnEj',
+//     'https://formapi.io/blog/posts/2018-bitcoin-programming-challenge/eab75cf16b878ce659a3c3d7b8a71cad2ea48a508f9333ef37807a3c8ff3f531/',
+//   ]),
 //   PUZZLES[1].html + PUZZLES[5].solutionCSS + PUZZLES[2].html + PUZZLES[3].html
 // ).toString();
+// console.log({ encryptedData });
 
-// console.log({ encryptedWIFKey });
-const ENCRYPTED_WIF_KEY =
-  'U2FsdGVkX19N6kVJm2Rn65KwMvkB0bQ0pQpJ7z4VOluHaof0gpMRcDO6YmVyakVDioBMUQjHXmyiD8mw3b/Hvco3mFc050PdguK4yjUTh4M=';
+const ENCRYPTED_DATA =
+  'U2FsdGVkX1/NARMbPXWPT95Fr4K9LXzCSkiB0dSed/4AL7H39G9q4hW88Ae3H7IyHw3A7xMF7/fX6dDlukPwiA1lhJdPEQHluwO9p+QTVtpeBW9jNiu9vdBHgOdpZ5XmVG1hztEztbkIa6zKkAdCclk7PtljZZApWJUwaFDx0LHKyjc9osUQXg2XPHyQCvC8wO39p6Wp/tKwauQABzNRwaL885ohUAaaJJ4wcog5neCTQjUq+tXLVhE6La81pJono1TxRhmoAIynpvYp9/+zkQ==';
 
 // Important - Don't decrypt this until the puzzle is solved,
 // so that it is never loaded into memory until required.
-const decryptWIFKey = (): string =>
-  CryptoJS.AES.decrypt(
-    ENCRYPTED_WIF_KEY,
-    PUZZLES[1].html + PUZZLES[5].solutionCSS + PUZZLES[2].html + PUZZLES[3].html
-  ).toString(CryptoJS.enc.Utf8);
+const decryptData = (): string[] =>
+  JSON.parse(
+    CryptoJS.AES.decrypt(
+      ENCRYPTED_DATA,
+      PUZZLES[1].html +
+        PUZZLES[5].solutionCSS +
+        PUZZLES[2].html +
+        PUZZLES[3].html
+    ).toString(CryptoJS.enc.Utf8)
+  );
 
 class App extends Component {
   targetCanvas: HTMLCanvasElement | null = null;
@@ -189,6 +197,8 @@ class App extends Component {
   renderCSSTimeout: number | undefined;
   cancelCurrentCSSUpdate: Function | undefined;
   cancelCurrentCSSRender: Function | undefined;
+
+  decryptedData: string[] | undefined;
 
   state = DEFAULT_STATE;
 
@@ -238,6 +248,11 @@ class App extends Component {
   }
 
   componentDidUpdate(prevProps: any, prevState: State) {
+    if (this.state.completed && !this.decryptedData) {
+      // Decrypt the data now.
+      this.decryptedData = decryptData();
+    }
+
     if (this.state.currentPuzzleIndex !== prevState.currentPuzzleIndex) {
       // Render changes immediately when changing the puzzle
       this.renderCSSIfUpdated(prevState);
@@ -275,6 +290,7 @@ class App extends Component {
       if (this.state.currentPuzzleIndex === PUZZLES.length - 1) {
         completed = true;
         completedModalVisible = true;
+        this.decryptedData = decryptData();
       }
 
       this.setState({
@@ -902,24 +918,28 @@ class App extends Component {
 
             <Modal
               title="Congratulations, you've completed the first stage!"
-              visible={this.state.completed && this.state.completedModalVisible}
+              visible={
+                this.state.completed &&
+                this.state.completedModalVisible &&
+                this.decryptedData != null
+              }
               footer={null}
               onCancel={() => {
                 this.setState({ completedModalVisible: false });
               }}
             >
-              {this.state.completed ? (
+              {this.state.completed && this.decryptedData ? (
                 <div>
                   <p>
                     Here's the first private key. This address contains{' '}
                     <strong>0.005 BTC</strong>:
                   </p>
-                  <code>{decryptWIFKey()}</code>
+                  <code>{this.decryptedData[0]}</code>
                   <br />
                   <br />
                   <p>You can find the next stage of the challenge here:</p>
                   <p>
-                    <a href=""></a>
+                    <a href={this.decryptedData[1]}>{this.decryptedData[1]}</a>
                   </p>
                 </div>
               ) : (
