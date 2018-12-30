@@ -324,7 +324,10 @@ class App extends Component {
   }
 
   changePuzzle(puzzleIndex: number) {
-    const { unlockedPuzzleIndex } = this.state;
+    const { currentPuzzleIndex, unlockedPuzzleIndex } = this.state;
+    // Don't do anything if this is already the current puzzle.
+    // (Otherwise we clear the diff percentage.)
+    if (currentPuzzleIndex === puzzleIndex) return;
 
     if (puzzleIndex < 0) return;
     // Don't allow any unlocked puzzles
@@ -341,6 +344,7 @@ class App extends Component {
       unlockedPuzzleIndex,
       completed: this.state.completed,
     });
+
     this.setState({
       currentPuzzleIndex: puzzleIndex,
       cssCode,
