@@ -4,7 +4,7 @@ const GREEN = '#00b159';
 const BLUE = '#00aedb';
 const ORANGE = '#f37735';
 const PINK = '#ff77aa';
-const YELLOW = '#ffc425';
+// const YELLOW = '#ffc425';
 
 const PUZZLES = [
   {

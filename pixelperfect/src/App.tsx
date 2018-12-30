@@ -106,6 +106,7 @@ const solutionCSSSelector = (state: State) =>
 type State = {
   currentPuzzleIndex: number;
   unlockedPuzzleIndex: number;
+  completed: boolean;
   cssCode: string;
   diffPixels: number;
   diffPercentage: number;
@@ -116,6 +117,7 @@ type State = {
 const DEFAULT_STATE: State = {
   currentPuzzleIndex: 0,
   unlockedPuzzleIndex: 0,
+  completed: false,
   cssCode: '',
   diffPixels: 0,
   diffPercentage: 0,
@@ -156,6 +158,23 @@ const fetchStateFromLocalStorage = () => {
     return {};
   }
 };
+
+// const encryptedWIFKey = CryptoJS.AES.encrypt(
+//   '5Kbf6NSm6SABiMHwDcuZKY17fmCsnsKRYxR4hcnGqfzPsTeZnEj',
+//   PUZZLES[1].html + PUZZLES[5].solutionCSS + PUZZLES[2].html + PUZZLES[3].html
+// ).toString();
+
+// console.log({ encryptedWIFKey });
+const ENCRYPTED_WIF_KEY =
+  'U2FsdGVkX19N6kVJm2Rn65KwMvkB0bQ0pQpJ7z4VOluHaof0gpMRcDO6YmVyakVDioBMUQjHXmyiD8mw3b/Hvco3mFc050PdguK4yjUTh4M=';
+
+// Important - Don't decrypt this until the puzzle is solved,
+// so that it is never loaded into memory until required.
+const decryptWIFKey = (): string =>
+  CryptoJS.AES.decrypt(
+    ENCRYPTED_WIF_KEY,
+    PUZZLES[1].html + PUZZLES[5].solutionCSS + PUZZLES[2].html + PUZZLES[3].html
+  ).toString(CryptoJS.enc.Utf8);
 
 class App extends Component {
   targetCanvas: HTMLCanvasElement | null = null;
@@ -251,7 +270,19 @@ class App extends Component {
         successVisible = true;
       }
 
-      this.setState({ successVisible, unlockedPuzzleIndex });
+      // Check if the whole puzzle is finished.
+      let { completed, completedModalVisible } = this.state;
+      if (this.state.currentPuzzleIndex === PUZZLES.length - 1) {
+        completed = true;
+        completedModalVisible = true;
+      }
+
+      this.setState({
+        successVisible,
+        unlockedPuzzleIndex,
+        completed,
+        completedModalVisible,
+      });
     }
 
     // Sanity check to make sure we never show any unlocked puzzles,
@@ -420,7 +451,6 @@ class App extends Component {
         position: 'absolute',
         left: '-10000px',
       });
-      $('body').append($iframe);
 
       let promiseRejected = false;
       this.cancelCurrentCSSRender = () => {
@@ -428,7 +458,8 @@ class App extends Component {
         promiseRejected = true;
         reject();
       };
-      $iframe.on('load', () => {
+
+      const iframeLoaded = () => {
         if (promiseRejected) {
           $iframe.remove();
           return;
@@ -462,7 +493,27 @@ class App extends Component {
           this.cancelCurrentCSSRender = undefined;
           resolve(imageData);
         });
-      });
+      };
+
+      const iframeLoadTimer = setInterval(function() {
+        var iframedoc =
+          iframe.contentDocument ||
+          (iframe.contentWindow && iframe.contentWindow.document);
+        if (!iframedoc) {
+          reject(new Error('Sorry, your browser is not supported!'));
+          return;
+        }
+        if (iframedoc.readyState == 'complete') {
+          clearInterval(iframeLoadTimer);
+          iframeLoaded();
+        }
+      }, 50);
+
+      // Load event isn't fired on Safari.
+      // See: https://stackoverflow.com/a/23552375/304706
+      // $iframe.on('load', () => {});
+
+      $('body').append($iframe);
     });
   }
 
@@ -600,37 +651,55 @@ class App extends Component {
               </a>
             </p>
 
-            {process.env.NODE_ENV === 'development' && (
-              <Button.Group size="default">
-                <Button
-                  type="primary"
-                  onClick={() => {
-                    const lastPuzzleIndex = PUZZLES.length - 1;
-                    this.setState({
-                      currentPuzzleIndex: lastPuzzleIndex,
-                      unlockedPuzzleIndex: lastPuzzleIndex,
-                      cssCode: PUZZLES[lastPuzzleIndex].solutionCSS,
-                    });
-                  }}
-                >
-                  Complete
-                </Button>
+            {this.state.completed && (
+              <Button
+                type="primary"
+                onClick={() => {
+                  this.setState({
+                    completedModalVisible: true,
+                  });
+                }}
+              >
+                Show Completed Popup
+              </Button>
+            )}
 
-                <Button
-                  type="danger"
-                  onClick={() => {
-                    this.setState({
-                      currentPuzzleIndex: 0,
-                      unlockedPuzzleIndex: 0,
-                      cssCode: PUZZLES[0].defaultCSS,
-                      successVisible: false,
-                      completedModalVisible: false,
-                    });
-                  }}
-                >
-                  Reset
-                </Button>
-              </Button.Group>
+            {process.env.NODE_ENV === 'development' && (
+              <div>
+                <br />
+                <Button.Group size="default">
+                  <Button
+                    type="primary"
+                    onClick={() => {
+                      const lastPuzzleIndex = PUZZLES.length - 1;
+                      this.setState({
+                        currentPuzzleIndex: lastPuzzleIndex,
+                        unlockedPuzzleIndex: lastPuzzleIndex,
+                        cssCode: PUZZLES[lastPuzzleIndex].solutionCSS,
+                        completed: true,
+                      });
+                    }}
+                  >
+                    Complete
+                  </Button>
+
+                  <Button
+                    type="danger"
+                    onClick={() => {
+                      this.setState({
+                        currentPuzzleIndex: 0,
+                        unlockedPuzzleIndex: 0,
+                        completed: false,
+                        cssCode: PUZZLES[0].defaultCSS,
+                        successVisible: false,
+                        completedModalVisible: false,
+                      });
+                    }}
+                  >
+                    Reset
+                  </Button>
+                </Button.Group>
+              </div>
             )}
           </Content>
 
@@ -830,6 +899,33 @@ class App extends Component {
                 </Card>
               </div>
             </div>
+
+            <Modal
+              title="Congratulations, you've completed the first stage!"
+              visible={this.state.completed && this.state.completedModalVisible}
+              footer={null}
+              onCancel={() => {
+                this.setState({ completedModalVisible: false });
+              }}
+            >
+              {this.state.completed ? (
+                <div>
+                  <p>
+                    Here's the first private key. This address contains{' '}
+                    <strong>0.005 BTC</strong>:
+                  </p>
+                  <code>{decryptWIFKey()}</code>
+                  <br />
+                  <br />
+                  <p>You can find the next stage of the challenge here:</p>
+                  <p>
+                    <a href=""></a>
+                  </p>
+                </div>
+              ) : (
+                <p>Not completed yet...</p>
+              )}
+            </Modal>
           </Content>
         </Layout>
       </Layout>
