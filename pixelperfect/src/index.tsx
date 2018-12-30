@@ -6,7 +6,21 @@ import ReactDOM from 'react-dom';
 import './style/index.less';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
-if (process.env.NODE_ENV === 'development') require('preact/debug');
+
+if (process.env.NODE_ENV === 'production') {
+  const disableReactDevTools = (): void => {
+    const noop = (): void => undefined;
+    const DEV_TOOLS = (window as any).__REACT_DEVTOOLS_GLOBAL_HOOK__;
+
+    if (typeof DEV_TOOLS === 'object') {
+      for (const key of Object.keys(DEV_TOOLS)) {
+        const value = DEV_TOOLS[key];
+        DEV_TOOLS[key] = typeof value === 'function' ? noop : null;
+      }
+    }
+  };
+  disableReactDevTools();
+}
 
 ReactDOM.render(<App />, document.getElementById('root'));
 
