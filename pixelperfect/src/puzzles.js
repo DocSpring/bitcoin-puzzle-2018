@@ -173,11 +173,10 @@ const PUZZLES = [
 .triangle {
   position: absolute;
   left: 55px;
-  bottom: 10px;
-  border-top: 50px solid transparent;
-  border-bottom: 50px solid transparent;
-  border-right: 50px solid #ff88bb;
-  transform: rotate(80deg);
+  bottom: 30px;
+  border-top: 30px solid transparent;
+  border-bottom: 30px solid transparent;
+  border-right: 40px solid #ff88bb;
   z-index: 10;
 }
 .circle {
