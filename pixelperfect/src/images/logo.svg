@@ -5,8 +5,8 @@
     <desc>Created with Sketch.</desc>
     <g id="logo" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
         <rect id="background" fill-rule="nonzero" x="0" y="0" width="512" height="512"></rect>
-        <rect id="square" stroke="#BF1717" stroke-width="38.25" fill-rule="nonzero" x="105.125" y="108.125" width="201.585729" height="201.585729" rx="30.75"></rect>
-        <rect id="square" stroke="#BF1717" stroke-width="38.25" fill-rule="nonzero" x="199.125" y="199.125" width="201.585729" height="201.585729" rx="30.75"></rect>
+        <rect id="square" stroke="#CD1717" stroke-width="38.25" fill-rule="nonzero" x="105.125" y="108.125" width="201.585729" height="201.585729" rx="30.75"></rect>
+        <rect id="square" stroke="#CD1717" stroke-width="38.25" fill-rule="nonzero" x="199.125" y="199.125" width="201.585729" height="201.585729" rx="30.75"></rect>
         <rect id="union-upper" fill="#FFFFFF" fill-rule="nonzero" x="288" y="180" width="38.2238193" height="38.2238193"></rect>
         <rect id="union-lower" fill="#FFFFFF" fill-rule="nonzero" x="180" y="291" width="38.2238193" height="38.2238193"></rect>
     </g>
