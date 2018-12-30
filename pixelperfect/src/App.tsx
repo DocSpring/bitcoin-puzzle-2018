@@ -3,6 +3,7 @@ import { createSelector } from 'reselect';
 import classNames from 'classnames';
 import $ from 'jquery';
 import { debounce, bind } from 'lodash-es';
+import CryptoJS from 'crypto-js';
 
 import html2canvas from 'html2canvas';
 import pixelmatch from 'pixelmatch';
@@ -125,6 +126,37 @@ const DEFAULT_STATE: State = {
 // const DEBUG = process.env.NODE_ENV === 'development';
 const log = process.env.NODE_ENV === 'development' ? console.log : () => {};
 
+const saveStateToLocalStorage = (state: State) => {
+  const { currentPuzzleIndex, unlockedPuzzleIndex } = state;
+  const savedState = {
+    currentPuzzleIndex,
+    unlockedPuzzleIndex,
+  };
+  const encryptedState = CryptoJS.AES.encrypt(
+    JSON.stringify(savedState),
+    PUZZLES[4].html + PUZZLES[2].solutionCSS + PUZZLES[0].html
+  ).toString();
+  // Update the saved state in localStorage
+  localStorage.setItem('state', encryptedState);
+};
+
+const fetchStateFromLocalStorage = () => {
+  const encryptedState = localStorage.getItem('state');
+  if (!encryptedState) return {};
+  try {
+    const stateJSON = CryptoJS.AES.decrypt(
+      encryptedState,
+      PUZZLES[4].html + PUZZLES[2].solutionCSS + PUZZLES[0].html
+    ).toString(CryptoJS.enc.Utf8);
+    const state = JSON.parse(stateJSON);
+    log('Decrypted state from local storage', state);
+    return state;
+  } catch (err) {
+    log('Error fetching state from local storage!', err);
+    return {};
+  }
+};
+
 class App extends Component {
   targetCanvas: HTMLCanvasElement | null = null;
   resultCanvas: HTMLCanvasElement | null = null;
@@ -144,12 +176,20 @@ class App extends Component {
   constructor(props: any) {
     super(props);
 
-    // Load the previous puzzle index from localStorage
-    const unlockedPuzzleIndex = parseInt(
-      localStorage.getItem('unlockedPuzzleIndex') || '0',
-      10
+    // Load the puzzle indexes from localStorage
+    // Whoops, can't let the user modify these so easily.
+
+    const loadedState = fetchStateFromLocalStorage();
+    const currentPuzzleIndex = Math.min(
+      PUZZLES.length - 1,
+      loadedState.currentPuzzleIndex || 0
     );
-    this.state.currentPuzzleIndex = unlockedPuzzleIndex;
+    const unlockedPuzzleIndex = Math.min(
+      PUZZLES.length - 1,
+      loadedState.unlockedPuzzleIndex || 0
+    );
+
+    this.state.currentPuzzleIndex = currentPuzzleIndex;
     this.state.unlockedPuzzleIndex = unlockedPuzzleIndex;
     this.state.cssCode = defaultCSSForCurrentPuzzleSelector(this.state);
 
@@ -187,6 +227,13 @@ class App extends Component {
       this.renderCSSIfUpdatedDebounced(prevState);
     }
 
+    if (
+      this.state.currentPuzzleIndex !== prevState.currentPuzzleIndex ||
+      this.state.unlockedPuzzleIndex !== prevState.unlockedPuzzleIndex
+    ) {
+      saveStateToLocalStorage(this.state);
+    }
+
     if (this.state.diffPercentage === 100 && prevState.diffPercentage !== 100) {
       // The current puzzle was just solved.
       // Unlock the next puzzle (if not already unlocked.)
@@ -196,11 +243,6 @@ class App extends Component {
           this.state.currentPuzzleIndex + 1,
           this.state.unlockedPuzzleIndex
         )
-      );
-      // Update the saved state in localStorage
-      localStorage.setItem(
-        'unlockedPuzzleIndex',
-        unlockedPuzzleIndex.toString()
       );
       let successVisible = this.state.successVisible;
       if (unlockedPuzzleIndex > this.state.unlockedPuzzleIndex) {
@@ -564,10 +606,6 @@ class App extends Component {
                   type="primary"
                   onClick={() => {
                     const lastPuzzleIndex = PUZZLES.length - 1;
-                    localStorage.setItem(
-                      'unlockedPuzzleIndex',
-                      lastPuzzleIndex.toString()
-                    );
                     this.setState({
                       currentPuzzleIndex: lastPuzzleIndex,
                       unlockedPuzzleIndex: lastPuzzleIndex,
@@ -581,9 +619,6 @@ class App extends Component {
                 <Button
                   type="danger"
                   onClick={() => {
-                    localStorage.setItem('unlockedPuzzleIndex', '0');
-                    // Force an update
-                    this.state.currentPuzzleIndex = -1;
                     this.setState({
                       currentPuzzleIndex: 0,
                       unlockedPuzzleIndex: 0,
@@ -646,7 +681,7 @@ class App extends Component {
                   className="ant-card-small ant-card-overflow"
                   title={this.cardTitle('HTML', <Icon type="html5" />)}
                   bordered={true}
-                  style={cardStyle}
+                  style={{ ...cardStyle, flex: 1 }}
                 >
                   <div className="static-code-wrapper overflow-wrapper">
                     {this.highlightedHTMLSelector(this.state)}
@@ -670,7 +705,8 @@ class App extends Component {
                     </Button>
                   }
                   bordered={true}
-                  style={cardStyle}
+                  // Padding aligns the margins
+                  style={{ ...cardStyle, flex: 2, paddingBottom: '12px' }}
                 >
                   <div className="overflow-wrapper">
                     <Editor
