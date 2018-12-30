@@ -28,21 +28,20 @@ Your program will print a hex-encoded 256-bit value after executing all
 of the instructions in the PDF. This 256-bit value is the private key
 for a Bitcoin address that contains 0.125 BTC.
 
-Congratulations, you've completed the puzzle! I hope you enjoyed this challenge.
+Congratulations! I hope you enjoyed the challenge.
 
 
 If you would like to take credit for the win, you can sign a message
 from the address that you transferred the Bitcoins to.
 (See how the previous winner did it: https://formapi.io/blog/posts/bitcoin-treasure-hunt/)
+You can then send me an email with your signed message: btc2018@formapi.io
 
-Then you can send me an email at: btc2018@formapi.io
+I'd love to update the post with some info about the winner and some feedback,
+and I'd be happy to include a link to your website, company, or Twitter account.
+But no problem if you want to stay anonymous!
 
-I'd love to hear from you, and I'd also be happy to mention you in the blog post
-with a link to your website or Twitter account.
-But no problem if you'd rather stay anonymous!
-
-Finally, if you enjoyed this puzzle, feel to free to sign up for our puzzle
-mailing list. I'll let you know if we do another one next year (no spam!):
+Finally, if you enjoyed this puzzle, feel to free to sign up for the BTC puzzle
+mailing list. I'll let you know if I do another one next year (no spam!):
 
 https://formapi.us1.list-manage.com/subscribe/post?u=2521e9a8706a4584514224aeb&id=26290c6ae4
 
