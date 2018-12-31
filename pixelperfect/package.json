@@ -32,7 +32,7 @@
   },
   "scripts": {
     "start": "nodemon -w ./src/style/AntDesign/customTheme.less -w craco.config.js --exec 'craco start'",
-    "build": "craco build",
+    "build": "craco build && rm -rf build/static/*/*.map",
     "test": "craco test",
     "eject": "react-scripts eject",
     "precommit": "pretty-quick --staged"

@@ -14,7 +14,7 @@ fi
 
 set -x
 
-craco build
+yarn build
 rm -rf deploy/static/ deploy/*
 cp -R build/* deploy/
 cd deploy
