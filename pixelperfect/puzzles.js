@@ -1,11 +1,3 @@
-// Color pallette:
-const RED = '#d11141';
-const GREEN = '#00b159';
-const BLUE = '#00aedb';
-const ORANGE = '#f37735';
-const PINK = '#ff77aa';
-// const YELLOW = '#ffc425';
-
 const PUZZLES = [
   {
     name: 'Width and Height',
@@ -15,13 +7,13 @@ const PUZZLES = [
 .square {
   width: 60px;
   height: 60px;
-  background: ${BLUE};
+  background: #00aedb;
 }`,
     defaultCSS: `\
 .square {
   width: 60px;
   height: 30px;
-  background: ${BLUE};
+  background: #00aedb;
 }`,
   },
 
@@ -34,13 +26,13 @@ const PUZZLES = [
   height: 60px;
   margin-top: 20px;
   margin-left: 40px;
-  background: ${BLUE};
+  background: #00aedb;
 }`,
     defaultCSS: `\
 .square {
   width: 60px;
   height: 60px;
-  background: ${BLUE};
+  background: #00aedb;
 }`,
   },
 
@@ -52,13 +44,13 @@ const PUZZLES = [
   width: 60px;
   height: 60px;
   border-radius: 60px;
-  background: ${RED};
+  background: #d11141;
 }`,
     defaultCSS: `\
 .circle {
   width: 60px;
   height: 60px;
-  background: ${RED};
+  background: #d11141;
 }`,
   },
 
@@ -69,13 +61,13 @@ const PUZZLES = [
 .square {
   width: 40px;
   height: 40px;
-  border: 10px solid ${BLUE};
+  border: 10px solid #00aedb;
 }`,
     defaultCSS: `\
 .square {
   width: 60px;
   height: 60px;
-  background: ${BLUE};
+  background: #00aedb;
 }`,
   },
 
@@ -88,11 +80,11 @@ const PUZZLES = [
   height: 64px;
   margin: 20px;
   transform: rotate(45deg);
-  background: ${PINK};
+  background: #ff77aa;
 }`,
     defaultCSS: `\
 .diamond {
-  background: ${PINK};
+  background: #ff77aa;
 }`,
   },
 
@@ -104,11 +96,11 @@ const PUZZLES = [
   margin-left: 21px;
   border-top: 30px solid transparent;
   border-bottom: 30px solid transparent;
-  border-left: 50px solid ${ORANGE};
+  border-left: 50px solid #f37735;
 }`,
     defaultCSS: `\
 .triangle {
-  color: ${ORANGE};
+  color: #f37735;
 }`,
   },
 
@@ -122,11 +114,11 @@ const PUZZLES = [
 .square {
   width: 110px;
   height: 110px;
-  border: 5px solid ${RED};
+  border: 5px solid #d11141;
   position: relative;
 }
 .circle {
-  border: 5px solid ${GREEN};
+  border: 5px solid #00b159;
   width: 55px;
   height: 55px;
   border-radius: 50%;
@@ -136,7 +128,7 @@ const PUZZLES = [
 }
 .circle::after {
   content: "";
-  border: 5px solid ${GREEN};
+  border: 5px solid #00b159;
   width: 55px;
   height: 55px;
   border-radius: 50%;
@@ -146,10 +138,10 @@ const PUZZLES = [
 }`,
     defaultCSS: `\
 .square {
-  /* ${RED} */
+  /* #d11141 */
 }
 .circle {
-  /* ${GREEN} */
+  /* #00b159 */
 }`,
   },
 
