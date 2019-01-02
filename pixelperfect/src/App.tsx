@@ -973,6 +973,13 @@ class App extends Component<Props, State> {
               {this.state.completed && this.decryptedData ? (
                 <div>
                   <p>
+                    Well done! You've completed the first stage of the 2018{' '}
+                    <a href="https://formapi.io/blog/posts/2018-bitcoin-programming-challenge/">
+                      Bitcoin programming challenge
+                    </a>
+                    !
+                  </p>
+                  <p>
                     Here's the first private key for an address that contains{' '}
                     <strong>0.005 BTC</strong>:
                   </p>
