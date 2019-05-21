@@ -4,7 +4,7 @@ set -e
 if ! [ -d deploy ]; then
   echo "deploy directory does not exist."
   set -x
-  git clone git@gitlab.com:form_api/btc2018.git deploy
+  git clone git@gitlab.com:docspring/btc2018.git deploy
   cd deploy
   set +x
   echo "Cloned the repo. Please try again."
