@@ -4,7 +4,7 @@ set -e
 if ! [ -d deploy ]; then
   echo "deploy directory does not exist."
   set -x
-  git clone git@gitlab.com:form_api/pixel_perfect.git deploy
+  git clone git@gitlab.com:docspring/pixel_perfect.git deploy
   cd deploy
   git checkout build
   set +x
